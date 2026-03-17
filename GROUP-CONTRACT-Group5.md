@@ -1,4 +1,4 @@
-# Group Contract – Group XX
+# Group Contract – Group 5
 
 ## Project Theme
 Our project focuses on youth justice in the Northern Territory by developing a platform that provides a searchable directory of youth diversion and support programs. The system will use public datasets such as NT Crime Statistics, AIHW Youth Justice data, Closing the Gap, and ABS Recorded Crime to support awareness and decision-making.
