@@ -23,7 +23,7 @@ We recognise that team members may have different schedules, learning speeds, an
 Since all the roles allocated in project development would be mutually agreed uopn, all members are expected to perform their tasks appropriately and in time. But in any conflict, all members of team shall mutually re-discuss their positions based on group-contract and try to find an immediate resolution since whole group progress would be hampered in any such scenario and workload on other team members would increase. If a solution cannot be found then the teaching team shall be contacted to suggest a justified resolution.
 
 ### Academic Integrity
-All team members are understood to have gone through CDU`s academic integrity policies and code of conduct. If any such concern arises, it will be immediately addressed between before submitting the project updates. AI tools are permitted to be used in the Project but strictly for learning purpose, sccafolding implementation and generating code efficiently. Team members are required to have full understanding and testing knowledge of the coding contribution as per their roles and clearly reference AI where needed.
+All team members are understood to have gone through CDU`s academic integrity policies and code of conduct. If any such concern arises, it will be immediately addressed in the Team before submitting the project updates. AI tools are permitted to be used in the Project but strictly for learning purpose, sccafolding implementation and generating code efficiently. Team members are required to have full understanding and testing knowledge of the coding contribution as per their roles and clearly reference AI where needed.
 
 ---
 
