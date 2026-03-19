@@ -36,6 +36,12 @@ We recognise that team members may have different schedules, learning speeds, an
 - All members with Gilbert's Lead: GitHub management, integration
 - Nawshin: Final Review and Submission
 
+### Checkpoints
+- Weekly meetings to review progress
+- Data review checkpoint (Week 4)
+- Draft review before assessment 2
+- Final review before assessment 4 submission
+
 ### Integration
 All work will be uploaded to GitHub and merged regularly. One member will manage final integration, but all members must review and approve before submission.
 
