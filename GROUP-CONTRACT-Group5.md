@@ -15,3 +15,45 @@ Tasks will be assigned during team meetings and can also be tracked through Micr
 
 ### Diverse Working Styles
 We recognise that team members may have different schedules, learning speeds, and personal commitments. The group will allow flexible working arrangements and support each other where needed. Deadlines and expectations will be discussed openly to ensure fairness. Clear communication will be maintained so that all members can contribute effectively regardless of their working style.
+
+---
+
+## Section 2: Provisional Milestones and Checkpoints
+
+### Milestones
+- Week 2-3: Finalise project idea and requirements  
+- Week 4: Collect and review data sources (NT crime data, AIHW, ABS)  
+- Week 5-6: Design system structure and database  
+- Week 7: Draft and submit Assessment 2  
+- Week 8-9: Develop features (search, filters, program listings)  
+- Week 10: Draft Assessment 4  
+- Week 11–12: Testing, improvements, and final submission  
+
+### Task Breakdown
+- Gilbert: Data collection and analysis (NT crime statistics, AIHW, ABS)  
+- All Members: Research youth justice policies and community programs  
+- Mahathir and Ahmad: System design and documentation writing  
+- All members with Gilbert's Lead: GitHub management, integration
+- Nawshin: Final Review and Submission
+
+### Integration
+All work will be uploaded to GitHub and merged regularly. One member will manage final integration, but all members must review and approve before submission.
+
+---
+
+## Data Sources
+- NT Crime Statistics (monthly data by offence and location)  
+- AIHW Youth Justice in Australia reports (NT-specific data)  
+- Closing the Gap dashboard (youth engagement data)  
+- ABS Recorded Crime — Offenders data  
+
+---
+
+## Agreement
+
+By contributing to this document, all members agree to follow the terms above.
+
+- Member 1: Mahathir Md Taief
+- Member 2: Gilbertofer Tanoto
+- Member 3: Nawshin Nawar Tanisha
+- Member 4: Muhammad Ahmad
