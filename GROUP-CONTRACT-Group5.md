@@ -19,6 +19,9 @@ Tasks will be assigned during team meetings and can also be tracked through Micr
 ### Diverse Working Styles
 We recognise that team members may have different schedules, learning speeds, and personal commitments. The group will allow flexible working arrangements and support each other where needed. Deadlines and expectations will be discussed openly to ensure fairness. Clear communication will be maintained so that all members can contribute effectively regardless of their working style.
 
+### Conflict Resoluion
+Since all the roles allocated in project development would be mutually agreed uopn, all members are expected to perform their tasks appropriately and in time. But in any conflict, all members of team shall mutually re-discuss their positions based on group-contract and try to find an immediate resolution since whole group progress would be hampered in any such scenario and workload on other team members would increase. If a solution cannot be found then the teaching team shall be contacted to suggest a justified resolution.
+
 ---
 
 ## Section 2: Provisional Milestones and Checkpoints
