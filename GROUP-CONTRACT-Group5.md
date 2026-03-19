@@ -24,6 +24,7 @@ Since all the roles allocated in project development would be mutually agreed uo
 
 ### Academic Integrity
 All team members are understood to have gone through CDU`s academic integrity policies and code of conduct. If any such concern arises, it will be immediately addressed between before submitting the project updates. AI tools are permitted to be used in the Project but strictly for learning purpose, sccafolding implementation and generating code efficiently. Team members are required to have full understanding and testing knowledge of the coding contribution as per their roles and clearly reference AI where needed.
+
 ---
 
 ## Section 2: Provisional Milestones and Checkpoints
