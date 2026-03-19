@@ -10,6 +10,9 @@ Our project focuses on youth justice in the Northern Territory by developing a p
 ### Group Allocation
 Grades will be awarded equally to all members, assuming each member contributes fairly. Roles will be assigned based on individual strengths and skills (e.g., development, design, data, documentation, managing Django). A fair contribution includes completing assigned tasks on time, actively participating in discussions, and supporting team progress.
 
+### Communication
+Microsoft Teams is our group`s official communication channel. All team members are understood to have mutually agreed to meet twice a week, once for an online meeting (scheduling dependent on progress) and a regular in-person meeting on Tuesdays after class. Acceptable response timings would be an 24 hours at maximum while serious situations such as Health or Family issues can be considered as exceptions. Meeting minutes shall be updated after each meeting and the videos would be recorded and stored in Microsoft Teams.
+
 ### Task Ownership
 Tasks will be assigned during team meetings and can also be tracked through Microsoft Teams. Each member is responsible for updating their progress in meeting minutes. If a member is unable to complete a task or falls behind, they must inform the group early (at least a week before the due date). The team may reassign tasks if needed to ensure deadlines are met. 
 
