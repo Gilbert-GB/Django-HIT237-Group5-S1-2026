@@ -56,10 +56,15 @@ All work will be uploaded to GitHub and merged regularly. One member will manage
 
 ---
 
-## Data Sources
-- NT Crime Statistics (monthly data by offence and location)  
-- AIHW Youth Justice in Australia reports (NT-specific data)  
-- Closing the Gap dashboard (youth engagement data)  
+## Data Sources (Gilbert)
+- NT Crime Statistics (monthly data by offence and location) 
+
+
+- AIHW Youth Justice in Australia reports (NT-specific data)
+![Australian youth justice supervision statistics dashboard showing 4,227 young people under supervision on average daily in 2023-24, with breakdowns by state, Indigenous status (53% First Nations), sex (80% male), and age groups (162 aged 10-13, 3,102 aged 14-17, 963 aged 18 and over)](Image\Dashboard_AIHW_youth_justice.png)
+![Table 2.1a and 2.1b: Number of young people under supervision by supervision type and state and territory, 2023-24. Table 2.1a shows average daily numbers and during-the-year counts across NSW, Victoria, Queensland, Western Australia, South Australia, Tasmania, ACT, and NT. Community supervision averages 3,470.6 daily nationally with 8,031 during the year. Detention averages 826.8 daily with 4,578 during the year. Table 2.1b presents rates per 10,000 population with community supervision at 10.0 per 10,000 daily and 25.1 during the year. Detention rates are 2.7 per 10,000 daily and 16.5 during the year. Queensland and ACT show highest rates. Asterisks indicate ACT and NT data limitations. Data source: Australian Institute of Health and Welfare, 2023-24.](Image\AIHW_Australia_Youth_Justice.png)  
+- Closing the Gap dashboard (youth engagement data) 
+![Figure CtG7.2 showing engagement rates for Aboriginal and Torres Strait Islander people aged 15-24 years in Northern Territory. Males: 41% in 2016, 35% in 2021. Females: 37% in 2016, 34% in 2021. Blue bars represent males, tan bars represent females. Data from Productivity Commission Closing the Gap dashboard, table CtG7A.2. Both sexes show declining engagement in employment, education or training between 2016 and 2021.](Image\Closing_the_gap_data_by_sex.png)
 - ABS Recorded Crime — Offenders data  
 
 ---
@@ -72,3 +77,5 @@ By contributing to this document, all members agree to follow the terms above.
 - Member 2: Gilbertofer Tanoto
 - Member 3: Nawshin Nawar Tanisha
 - Member 4: Muhammad Ahmad
+
+
