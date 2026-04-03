@@ -18,7 +18,20 @@ Using pre-built features from django helps reduce workload and add common compon
 ### Solutions (Decision):
 Making use of this philosophy, we will:
 - Use **Django`s Admin Panel** to manage all listings on the web app
-- Using **Django`s Built-in Authentication** feature to user/organisation login activity
+- Using **Django`s Built-in Authentication** feature for user/organisation login activity
 - Avoiding advanced or unnecessary features in projects (by reviewing client desireables)
 
 This simple method allows our team to build a functional web application timely, ensuring all the important features are included without getting stuck with complex implementation issues in development process.
+
+### Consequences (Results):
+Postive attributes:
+1. Quick and Easy development of application
+2. Less effort required, higher funcationality ensured
+3. Good learning curve for deveopment team, easy understanding and implementation
+
+Negative attributes:
+1. User interface might not be very complex
+2. Customization options can be limited
+3. Room for improvement in future versions
+
+**This Data will be updated as the project development progresses.**
