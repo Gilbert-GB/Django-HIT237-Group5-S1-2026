@@ -9,6 +9,16 @@ In the context of building a web app for NT youth diversion and support program,
 The features to be developed in this web application are:
 + Searching programs
 + Filtering by location, age and type of crime
-+ Allowing NGOs and organizations to manage listings   
-As new-to-django developer team, creating all these features from scratch will consume alot of time and increase difficulty overall. But according to this philosophy of django, the frameword already has alot of built-in features to fast track coding projects.   
++ Allowing NGOs and organizations to manage listings
+
+As new-to-django developer team, creating all these features from scratch will consume alot of time and increase difficulty overall. But according to this philosophy of django, the frameword already has alot of built-in features to fast track coding projects.
+
 Using pre-built features from django helps reduce workload and add common components of our website quick and easy, this allows our team to focus on core functionality of our web app and conserving time and effort from adding low-level features on our app.
+
+### Solutions (Decision):
+Making use of this philosophy, we will:
+- Use **Django`s Admin Panel** to manage all listings on the web app
+- Using **Django`s Built-in Authentication** feature to user/organisation login activity
+- Avoiding advanced or unnecessary features in projects (by reviewing client desireables)
+
+This simple method allows our team to build a functional web application timely, ensuring all the important features are included without getting stuck with complex implementation issues in development process.
