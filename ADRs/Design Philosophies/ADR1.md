@@ -1,4 +1,4 @@
-# Architecture Decision Record (ADR) for:  
+### Architecture Decision Record (ADR) for:  
 **Design Philosophy : Quick Development**
 
 ## Introduction
