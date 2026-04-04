@@ -6,7 +6,7 @@
 ### Proluge (Summary):
 Facing difficulty in managing large, complex code for our django-based web application, as a team of beginner-level developers we considered following django`s philosophy of writing **less code**. This will make development process much more quicker and efficient enhancing readability in our code, helping us achieve simplicity and less errors and bugs at the cost of reduced-control.
 
-### Discussion:
+### Discussion (Context):
 Writing a project with large amount of code can be overwhelming for our team and it can be hard to debug any issues considering hard navigation throughout the large and complex code structure. Django helps in this regard through its built-in tools and functions that will help our team to minimize our code while ensuring core functionalities.  
 Possible issues can be as follows:
 - Writing many raw SQL queries to manage database is tough than simply using Django ORM
@@ -18,7 +18,19 @@ We, as a team, can prioritize and focus on understanding and enhancing the funct
 We can reduce of code through:
 - Using **django ORM** rather than writing complex SQL queries
 - Use **ModelForms** from Django instead of making any custom html forms
-- Similarly, using built-in django features as requried and avoiding custom implementations as possible.
+- Similarly, using built-in django features as requried and avoiding custom implementations as possible
 
 The application of this decision will help keep our app easily manageable and simple to understand.
+
+### Consequences (Results):
+Postive attributes:
+1. Clean and highly readable code, easy to understand
+2. Fast and easy maintenance, simple structure means easy to debug
+3. Fast learning curve for team as we navigate through the development process..
+
+Negative attributes:
+1. Reduced controls means lesser customisation options
+2. Using built-in functions might cause developers to not fully grasp low-level implementation concepts at first
+---
+**This Data can be updated as the project development progresses.**
 
