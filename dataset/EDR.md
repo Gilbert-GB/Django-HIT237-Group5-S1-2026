@@ -44,7 +44,7 @@ erDiagram
         float value
         int year
     }
-
+    
 ### ERD Explanation
 
 The system is centred around the **Program** entity, which represents youth diversion and support programs.
