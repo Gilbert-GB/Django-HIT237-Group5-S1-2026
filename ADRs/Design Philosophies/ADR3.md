@@ -28,3 +28,15 @@ Using this design philosophy, we will:
 For example:
 - Views file handles filtering programs
 - Template will only display the filtered results we got from our backend
+
+### Consequences (Results):
+Postive attributes:
+1. Achieve an organised project structure
+2. Easier to update GUI without affecting any backend logic code
+3. Easy to debug errors
+
+Negative attributes:
+1. Working with django templates requries learning its functionalities
+2. Extra files means managing multiple files simultaneously
+---
+**This Data can be updated as the project development progresses.**
