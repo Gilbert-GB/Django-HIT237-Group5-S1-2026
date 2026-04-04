@@ -18,3 +18,13 @@ If we don`t have this approach and both logic and presentation is mixed then:
 - Difficulty in debugging errors
 - Updating GUI can be tough for future versions of application
 
+### Solutions (Decision):
+Using this design philosophy, we will:
+- Write all logic code inside models and views files
+- Use templates for only frontend display
+- Avoid writing any logic code inside HTML files
+- Pass data from views to templates using consistent variables
+
+For example:
+- Views file handles filtering programs
+- Template will only display the filtered results we got from our backend
