@@ -44,13 +44,3 @@ erDiagram
         float value
         int year
     }
-    
-### ERD Explanation
-
-The system is centred around the **Program** entity, which represents youth diversion and support programs.
-
-- A **User** can create programs  
-- An **Organisation** manages multiple programs  
-- Programs can be either system-provided or user-generated (using the `source` field)  
-
-The **CrimeData** and **YouthJusticeData** entities store simplified external data used for the dashboard. They are not directly linked to programs but support data visualisation and insights.
