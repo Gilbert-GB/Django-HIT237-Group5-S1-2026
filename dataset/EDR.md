@@ -45,16 +45,6 @@ erDiagram
         int year
     }
 
-    
----
-
-# 🔍 3. Simple Explanation (put under diagram)
-
-Add this in your README:
-
-```md id="b8c36l"
-### ERD Explanation
-
 The system is centred around the **Program** entity, which represents youth diversion and support programs.
 
 - A **User** can create programs and may be linked to an **Organisation**
