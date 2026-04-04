@@ -13,3 +13,12 @@ Possible issues can be as follows:
 - Manually handling and coding forms is harder compared to usability of ModelForms
 
 We, as a team, can prioritize and focus on understanding and enhancing the functionality of our application rather than coding complex components simply through use of this design philosophy.
+
+### Solutions (Decision):
+We can reduce of code through:
+- Using **django ORM** rather than writing complex SQL queries
+- Use **ModelForms** from Django instead of making any custom html forms
+- Similarly, using built-in django features as requried and avoiding custom implementations as possible.
+
+The application of this decision will help keep our app easily manageable and simple to understand.
+
