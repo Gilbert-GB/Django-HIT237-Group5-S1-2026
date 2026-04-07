@@ -4,109 +4,135 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Youth Justice NT</title>
-   <style>
-    body {
-        font-family: Arial, sans-serif;
-        background-color: #f4f7fb;
-        margin: 0;
-        padding: 0;
-    }
 
-    header {
-        background-color: #1e3a5f;
-        color: white;
-        padding: 20px 40px;
-    }
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f7fb;
+            margin: 0;
+            padding: 0;
+        }
 
-    header h1 {
-        margin: 0;
-    }
+        header {
+            background-color: #1e3a5f;
+            color: white;
+            padding: 20px 40px;
+        }
 
-    .container {
-        width: 85%;
-        margin: 30px auto;
-    }
+        header h1 {
+            margin: 0;
+        }
 
-    .search-box {
-        margin-bottom: 30px;
-    }
+        .container {
+            width: 85%;
+            margin: 30px auto;
+        }
 
-    .search-box input[type="text"] {
-        padding: 10px;
-        width: 300px;
-        border: 1px solid #ccc;
-        border-radius: 6px;
-    }
+        /* REGION BUTTONS */
+        .region-links {
+            margin-bottom: 25px;
+        }
 
-    .search-box select {
-        padding: 10px;
-        border: 1px solid #ccc;
-        border-radius: 6px;
-        margin-left: 8px;
-    }
+        .region-links a {
+            display: inline-block;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            padding: 10px 16px;
+            background-color: white;
+            color: #1e3a5f;
+            text-decoration: none;
+            border-radius: 20px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+            font-weight: bold;
+        }
 
-    .search-box button {
-        padding: 10px 16px;
-        border: none;
-        background-color: #1e3a5f;
-        color: white;
-        border-radius: 6px;
-        cursor: pointer;
-    }
+        .region-links a:hover {
+            background-color: #e8eef7;
+        }
 
-    h2 {
-        color: #1e3a5f;
-        margin-top: 40px;
-    }
+        /* SEARCH BOX */
+        .search-box {
+            margin-bottom: 30px;
+        }
 
-    .program-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 20px;
-    }
+        .search-box input[type="text"] {
+            padding: 10px;
+            width: 250px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+        }
 
-    .program-card {
-        background-color: white;
-        padding: 20px;
-        border-radius: 10px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-    }
+        .search-box select {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            margin-left: 8px;
+        }
 
-    .program-card h3 {
-        margin-top: 0;
-        color: #16324a;
-    }
+        .search-box button {
+            padding: 10px 16px;
+            border: none;
+            background-color: #1e3a5f;
+            color: white;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-left: 8px;
+        }
 
-    /* clickable title link */
-    .program-card h3 a {
-        text-decoration: none;
-        color: #16324a;
-    }
+        h2 {
+            color: #1e3a5f;
+            margin-top: 40px;
+        }
 
-    .program-card h3 a:hover {
-        text-decoration: underline;
-    }
+        /* GRID */
+        .program-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
 
-    .program-card p {
-        margin: 8px 0;
-        color: #333;
-    }
+        /* CARD */
+        .program-card {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
 
-    .program-card a {
-        display: inline-block;
-        margin-top: 10px;
-        text-decoration: none;
-        color: #1e3a5f;
-        font-weight: bold;
-    }
+        .program-card h3 {
+            margin-top: 0;
+        }
 
-    .empty-message {
-        background: white;
-        padding: 15px;
-        border-radius: 8px;
-    }
-</style> 
+        .program-card h3 a {
+            text-decoration: none;
+            color: #16324a;
+        }
+
+        .program-card h3 a:hover {
+            text-decoration: underline;
+        }
+
+        .program-card p {
+            margin: 8px 0;
+            color: #333;
+        }
+
+        .program-card a {
+            display: inline-block;
+            margin-top: 10px;
+            text-decoration: none;
+            color: #1e3a5f;
+            font-weight: bold;
+        }
+
+        .empty-message {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+        }
+    </style>
 </head>
+
 <body>
 
     <header>
@@ -116,36 +142,56 @@
 
     <div class="container">
 
-        <div class="search-box">
-    <form method="GET">
-        <input type="text" name="search" placeholder="Search programs by name" value="{{ search_query }}">
-
-        <select name="region">
-            <option value="">All Regions</option>
+        <!-- REGION FILTER BUTTONS -->
+        <div class="region-links">
+            <a href="{% url 'home' %}">All</a>
             {% for value, label in region_choices %}
-                <option value="{{ value }}" {% if selected_region == value %}selected{% endif %}>{{ label }}</option>
+                <a href="?region={{ value }}">{{ label }}</a>
             {% endfor %}
-        </select>
+        </div>
 
-        <select name="category">
-            <option value="">All Categories</option>
-            {% for value, label in category_choices %}
-                <option value="{{ value }}" {% if selected_category == value %}selected{% endif %}>{{ label }}</option>
-            {% endfor %}
-        </select>
+        <!-- SEARCH + FILTER -->
+        <div class="search-box">
+            <form method="GET">
+                <input type="text" name="search" placeholder="Search programs" value="{{ search_query }}">
 
-        <button type="submit">Filter</button>
-    </form>
-    </div>
+                <select name="region">
+                    <option value="">All Regions</option>
+                    {% for value, label in region_choices %}
+                        <option value="{{ value }}" {% if selected_region == value %}selected{% endif %}>
+                            {{ label }}
+                        </option>
+                    {% endfor %}
+                </select>
 
+                <select name="category">
+                    <option value="">All Categories</option>
+                    {% for value, label in category_choices %}
+                        <option value="{{ value }}" {% if selected_category == value %}selected{% endif %}>
+                            {{ label }}
+                        </option>
+                    {% endfor %}
+                </select>
+
+                <button type="submit">Filter</button>
+            </form>
+        </div>
+
+        <!-- FEATURED PROGRAMS -->
         <h2>Featured Programs</h2>
         <div class="program-grid">
             {% for program in featured_programs %}
                 <div class="program-card">
-                    <h3>{{ program.name }}</h3>
+                    <h3>
+                        <a href="{% url 'program_detail' program.id %}">
+                            {{ program.name }}
+                        </a>
+                    </h3>
+
                     <p><strong>Organisation:</strong> {{ program.organisation }}</p>
                     <p><strong>Region:</strong> {{ program.get_region_display }}</p>
                     <p><strong>Category:</strong> {{ program.get_category_display }}</p>
+
                     <p>{{ program.short_description }}</p>
 
                     {% if program.website %}
@@ -154,22 +200,27 @@
                 </div>
             {% empty %}
                 <div class="empty-message">
-                    <p>No featured programs added yet.</p>
+                    No featured programs available
                 </div>
             {% endfor %}
         </div>
 
+        <!-- ALL PROGRAMS -->
         <h2>All Programs</h2>
         <div class="program-grid">
             {% for program in programs %}
                 <div class="program-card">
                     <h3>
-<a href="{% url 'program_detail' program.id %}">{{ program.name }}</a>
+                        <a href="{% url 'program_detail' program.id %}">
+                            {{ program.name }}
+                        </a>
                     </h3>
+
                     <p><strong>Organisation:</strong> {{ program.organisation }}</p>
-                    <p><strong>Region:</strong> {{ program.region }}</p>
-                    <p><strong>Category:</strong> {{ program.category }}</p>
-                    <p><strong>Age:</strong> {{ program.age_min }} to {{ program.age_max }}</p>
+                    <p><strong>Region:</strong> {{ program.get_region_display }}</p>
+                    <p><strong>Category:</strong> {{ program.get_category_display }}</p>
+                    <p><strong>Age:</strong> {{ program.age_min }} - {{ program.age_max }}</p>
+
                     <p>{{ program.short_description }}</p>
 
                     {% if program.website %}
@@ -178,7 +229,7 @@
                 </div>
             {% empty %}
                 <div class="empty-message">
-                    <p>No programs found.</p>
+                    No programs found
                 </div>
             {% endfor %}
         </div>
@@ -186,4 +237,4 @@
     </div>
 
 </body>
-</html> 
+</html>
