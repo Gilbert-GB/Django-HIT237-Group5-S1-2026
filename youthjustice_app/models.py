@@ -11,6 +11,7 @@ class Program(models.Model):
         ("mentoring", "Mentoring"),
         ("justice", "Justice"),
         ("education", "Education"),
+        ("rehabilitation", "Rehabilitation"),
         ("other", "Other"),
     ]
 
