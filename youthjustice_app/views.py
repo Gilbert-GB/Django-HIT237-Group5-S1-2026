@@ -58,3 +58,6 @@ def program_detail(request, program_id):
     # showing one program based on its id
     program = get_object_or_404(Program, id=program_id)
     return render(request, "program_detail.html", {"program": program})
+
+def about(request):
+    return render(request, "about.html") 
