@@ -18,6 +18,10 @@
         padding: 20px 40px;
     }
 
+    header h1 {
+        margin: 0;
+    }
+
     .container {
         width: 85%;
         margin: 30px auto;
@@ -71,6 +75,16 @@
     .program-card h3 {
         margin-top: 0;
         color: #16324a;
+    }
+
+    /* clickable title link */
+    .program-card h3 a {
+        text-decoration: none;
+        color: #16324a;
+    }
+
+    .program-card h3 a:hover {
+        text-decoration: underline;
     }
 
     .program-card p {
@@ -149,7 +163,9 @@
         <div class="program-grid">
             {% for program in programs %}
                 <div class="program-card">
-                    <h3>{{ program.name }}</h3>
+                    <h3>
+<a href="{% url 'program_detail' program.id %}">{{ program.name }}</a>
+                    </h3>
                     <p><strong>Organisation:</strong> {{ program.organisation }}</p>
                     <p><strong>Region:</strong> {{ program.region }}</p>
                     <p><strong>Category:</strong> {{ program.category }}</p>

@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from .models import Program
 
 
@@ -31,3 +31,8 @@ def home(request):
     }
 
     return render(request, "home.html", context)
+
+
+def program_detail(request, program_id):
+    program = get_object_or_404(Program, id=program_id)
+    return render(request, "program_detail.html", {"program": program})
