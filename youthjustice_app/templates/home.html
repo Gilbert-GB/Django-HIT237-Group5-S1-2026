@@ -16,11 +16,27 @@
         header {
             background-color: #1e3a5f;
             color: white;
-            padding: 20px 40px;
+            padding: 20px 40px 10px 40px;
         }
 
         header h1 {
             margin: 0;
+        }
+
+        .navbar {
+            margin-top: 15px;
+        }
+
+        .navbar a {
+            display: inline-block;
+            margin-right: 20px;
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .navbar a:hover {
+            text-decoration: underline;
         }
 
         .container {
@@ -124,6 +140,7 @@
 
         .program-card h3 {
             margin-top: 0;
+            margin-bottom: 10px;
         }
 
         .program-card h3 a {
@@ -148,6 +165,25 @@
             font-weight: bold;
         }
 
+        .status-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: bold;
+            margin-bottom: 12px;
+        }
+
+        .available {
+            background-color: #dff3e3;
+            color: #1f7a36;
+        }
+
+        .unavailable {
+            background-color: #f8d7da;
+            color: #a12634;
+        }
+
         .empty-message {
             background: white;
             padding: 15px;
@@ -161,6 +197,12 @@
     <header>
         <h1>Youth Justice NT</h1>
         <p>Supporting youth diversion and community programs across the Northern Territory</p>
+
+        <div class="navbar">
+            <a href="{% url 'home' %}">Home</a>
+            <a href="{% url 'home' %}">Programs</a>
+            <a href="/admin/">Admin</a>
+        </div>
     </header>
 
     <div class="container">
@@ -219,6 +261,12 @@
         <div class="program-grid">
             {% for program in featured_programs %}
                 <div class="program-card">
+                    {% if program.is_available %}
+                        <span class="status-badge available">Available</span>
+                    {% else %}
+                        <span class="status-badge unavailable">Not Available</span>
+                    {% endif %}
+
                     <h3>
                         <a href="{% url 'program_detail' program.id %}">
                             {{ program.name }}
@@ -245,6 +293,12 @@
         <div class="program-grid">
             {% for program in programs %}
                 <div class="program-card">
+                    {% if program.is_available %}
+                        <span class="status-badge available">Available</span>
+                    {% else %}
+                        <span class="status-badge unavailable">Not Available</span>
+                    {% endif %}
+
                     <h3>
                         <a href="{% url 'program_detail' program.id %}">
                             {{ program.name }}
