@@ -56,6 +56,25 @@
             color: #1e3a5f;
             font-weight: bold;
         }
+
+        .status-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .available {
+            background-color: #dff3e3;
+            color: #1f7a36;
+        }
+
+        .unavailable {
+            background-color: #f8d7da;
+            color: #a12634;
+        }
     </style>
 </head>
 <body>
@@ -68,22 +87,18 @@
         <a href="{% url 'home' %}" class="back-link">← Back to Programs</a>
 
         <div class="detail-card">
+            {% if program.is_available %}
+                <span class="status-badge available">Available</span>
+            {% else %}
+                <span class="status-badge unavailable">Not Available</span>
+            {% endif %}
+
             <h1>{{ program.name }}</h1>
 
             <p><strong>Organisation:</strong> {{ program.organisation }}</p>
             <p><strong>Region:</strong> {{ program.get_region_display }}</p>
             <p><strong>Category:</strong> {{ program.get_category_display }}</p>
             <p><strong>Age Range:</strong> {{ program.age_min }} to {{ program.age_max }}</p>
-
-            <p>
-                <strong>Availability:</strong>
-                {% if program.is_available %}
-                    Available
-                {% else %}
-                    Not currently available
-                {% endif %}
-            </p>
-
             <p><strong>Description:</strong> {{ program.short_description }}</p>
 
             {% if program.website %}
