@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Youth Justice NT</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f7fb;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #1e3a5f;
+            color: white;
+            padding: 20px 40px;
+        }
+
+        header h1 {
+            margin: 0;
+        }
+
+        .container {
+            width: 85%;
+            margin: 30px auto;
+        }
+
+        .search-box {
+            margin-bottom: 30px;
+        }
+
+        .search-box input[type="text"] {
+            padding: 10px;
+            width: 300px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+        }
+
+        .search-box button {
+            padding: 10px 16px;
+            border: none;
+            background-color: #1e3a5f;
+            color: white;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        h2 {
+            color: #1e3a5f;
+            margin-top: 40px;
+        }
+
+        .program-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .program-card {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .program-card h3 {
+            margin-top: 0;
+            color: #16324a;
+        }
+
+        .program-card p {
+            margin: 8px 0;
+            color: #333;
+        }
+
+        .program-card a {
+            display: inline-block;
+            margin-top: 10px;
+            text-decoration: none;
+            color: #1e3a5f;
+            font-weight: bold;
+        }
+
+        .empty-message {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Youth Justice NT</h1>
+        <p>Supporting youth diversion and community programs across the Northern Territory</p>
+    </header>
+
+    <div class="container">
+
+        <div class="search-box">
+            <form method="GET">
+                <input type="text" name="search" placeholder="Search programs by name" value="{{ search_query }}">
+                <button type="submit">Search</button>
+            </form>
+        </div>
+
+        <h2>Featured Programs</h2>
+        <div class="program-grid">
+            {% for program in featured_programs %}
+                <div class="program-card">
+                    <h3>{{ program.name }}</h3>
+                    <p><strong>Organisation:</strong> {{ program.organisation }}</p>
+                    <p><strong>Region:</strong> {{ program.get_region_display }}</p>
+                    <p><strong>Category:</strong> {{ program.get_category_display }}</p>
+                    <p>{{ program.short_description }}</p>
+
+                    {% if program.website %}
+                        <a href="{{ program.website }}" target="_blank">Visit Website</a>
+                    {% endif %}
+                </div>
+            {% empty %}
+                <div class="empty-message">
+                    <p>No featured programs added yet.</p>
+                </div>
+            {% endfor %}
+        </div>
+
+        <h2>All Programs</h2>
+        <div class="program-grid">
+            {% for program in programs %}
+                <div class="program-card">
+                    <h3>{{ program.name }}</h3>
+                    <p><strong>Organisation:</strong> {{ program.organisation }}</p>
+                    <p><strong>Region:</strong> {{ program.region }}</p>
+                    <p><strong>Category:</strong> {{ program.category }}</p>
+                    <p><strong>Age:</strong> {{ program.age_min }} to {{ program.age_max }}</p>
+                    <p>{{ program.short_description }}</p>
+
+                    {% if program.website %}
+                        <a href="{{ program.website }}" target="_blank">Visit Website</a>
+                    {% endif %}
+                </div>
+            {% empty %}
+                <div class="empty-message">
+                    <p>No programs found.</p>
+                </div>
+            {% endfor %}
+        </div>
+
+    </div>
+
+</body>
+</html> 
