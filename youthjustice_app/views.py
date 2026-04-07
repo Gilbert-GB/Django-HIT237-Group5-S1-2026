@@ -20,6 +20,10 @@ def home(request):
 
     featured_programs = Program.objects.filter(is_featured=True)
 
+    total_programs = Program.objects.count()
+    total_featured = Program.objects.filter(is_featured=True).count()
+    total_available = Program.objects.filter(is_available=True).count()
+
     context = {
         "programs": programs,
         "featured_programs": featured_programs,
@@ -28,6 +32,9 @@ def home(request):
         "selected_category": selected_category,
         "region_choices": Program.REGION_CHOICES,
         "category_choices": Program.CATEGORY_CHOICES,
+        "total_programs": total_programs,
+        "total_featured": total_featured,
+        "total_available": total_available,
     }
 
     return render(request, "home.html", context)
