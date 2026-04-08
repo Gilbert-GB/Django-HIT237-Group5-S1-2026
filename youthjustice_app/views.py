@@ -60,4 +60,4 @@ def program_detail(request, program_id):
     return render(request, "program_detail.html", {"program": program})
 
 def about(request):
-    return render(request, "about.html") 
+    return render(request, "about.html")

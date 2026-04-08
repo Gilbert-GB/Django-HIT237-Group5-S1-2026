@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>About | Youth Justice NT</title>
+
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -13,9 +14,30 @@
         }
 
         header {
-            background-color: #1e3a5f;
+            background: linear-gradient(
+                to right,
+                #1e3a5f 0%,
+                #2b5d8a 25%,
+                #3f78a8 50%,
+                #2b5d8a 75%,
+                #1e3a5f 100%
+            );
             color: white;
-            padding: 20px 40px 10px 40px;
+            padding: 25px 0;
+            text-align: center;
+            box-shadow: 0 6px 20px rgba(30, 58, 95, 0.25);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 36px;
+            letter-spacing: 1px;
+        }
+
+        header p {
+            margin-top: 8px;
+            font-size: 14px;
+            opacity: 0.95;
         }
 
         .navbar {
@@ -24,10 +46,11 @@
 
         .navbar a {
             display: inline-block;
-            margin-right: 20px;
+            margin: 0 15px;
             color: white;
             text-decoration: none;
             font-weight: bold;
+            font-size: 15px;
         }
 
         .navbar a:hover {
@@ -35,32 +58,37 @@
         }
 
         .container {
-            width: 80%;
+            width: 85%;
             margin: 30px auto;
         }
 
         .about-card {
-            background-color: white;
-            padding: 25px;
-            border-radius: 10px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            background: linear-gradient(180deg, #ffffff, #f9fcff);
+            padding: 28px;
+            border-radius: 18px;
+            box-shadow: 0 10px 24px rgba(70, 130, 180, 0.12);
+            border: 1px solid rgba(70, 130, 180, 0.12);
         }
 
-        .about-card h1 {
+        .about-card h2 {
             margin-top: 0;
-            color: #16324a;
+            color: #1c3553;
+            font-size: 28px;
         }
 
         .about-card p {
-            line-height: 1.7;
-            color: #333;
+            color: #334;
+            line-height: 1.8;
+            font-size: 15px;
+            margin-bottom: 18px;
         }
     </style>
 </head>
 <body>
 
     <header>
-        <h2>Youth Justice NT</h2>
+        <h1>Youth Justice NT</h1>
+        <p>Supporting youth diversion and community programs across the Northern Territory</p>
 
         <div class="navbar">
             <a href="{% url 'home' %}">Home</a>
@@ -72,23 +100,24 @@
 
     <div class="container">
         <div class="about-card">
-            <h1>About Youth Justice NT</h1>
+            <h2>About Youth Justice NT</h2>
+
             <p>
-                Youth Justice NT is a Django-based web application designed to help users explore youth diversion
-                and support programs across the Northern Territory. The purpose of this system is to make program
-                information easier to find through searching, filtering, and viewing detailed program information
-                in one place.
+                Youth Justice NT is a Django-based web application created to make youth diversion and support
+                programs across the Northern Territory easier to find and understand. Instead of searching through
+                different websites separately, users can access important program details in one place.
             </p>
 
             <p>
-                This project focuses on community-based support, diversion, mentoring, and rehabilitation options
-                for young people. It aims to improve access to useful information and highlight services that may
-                support alternatives to detention.
+                This project focuses on alternatives to detention by highlighting support services such as diversion,
+                mentoring, throughcare, education, and community-based programs. The aim is to make these services
+                more visible and accessible for users.
             </p>
 
             <p>
-                The system includes features such as featured programs, region filtering, category filtering,
-                search, sorting, availability status, and detailed program pages.
+                The system includes useful features such as searching, filtering by region and category, sorting,
+                featured programs, availability status, and detailed program pages. These features help users browse
+                programs more clearly and quickly.
             </p>
         </div>
     </div>
