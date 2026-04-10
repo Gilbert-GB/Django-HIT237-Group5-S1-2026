@@ -50,3 +50,4 @@ class ProgramForm(forms.ModelForm):
             "website",
         ]
 
+# This file serves logic, for users to register and manage listings through the website
