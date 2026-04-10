@@ -6,6 +6,8 @@ from django.urls import reverse
 
 # Models being created from here
 
+
+# Added by Ahmad
 # This model stores extra information about an organisation user
 # Each OrganisationProfile will belongs to one Django user account
 class OrganisationProfile(models.Model):
@@ -90,9 +92,28 @@ class Program(models.Model):
     # auto timestamp when record is created
     created_at = models.DateTimeField(auto_now_add=True)
 
+
+    class Meta:
+        ordering = ["name"]
+
+    # To sure age_min is not greater than age_max
+    def clean(self):
+        if self.age_min > self.age_max:
+            raise ValidationError("Minimum age cannot be greater than maximum age.")
+
+    # Automatically fill organisation name from the owner profile if possible
+    def save(self, *args, **kwargs):
+        if self.owner and not self.organisation:
+            self.organisation = self.owner.organisation_name
+        self.full_clean()
+        super().save(*args, **kwargs)
+
+    # Tells Django where to go after creating/updating a program
+    def get_absolute_url(self):
+        return reverse("program_detail", kwargs={"pk": self.pk})
+
     def __str__(self):
         return self.name
-
 
 # =====================================================================
 # DATA PIPELINE MODELS (Added by Mahathir)
