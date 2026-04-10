@@ -15,3 +15,22 @@ class OrganisationRegisterForm(UserCreationForm):
     contact_email = forms.EmailField(required=True)
     contact_phone = forms.CharField(max_length=30, required=False)
     region = forms.ChoiceField(choices=OrganisationProfile.REGION_CHOICES)
+
+
+    # We shall Save user details first, then create its organisation profile
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        user.email = self.cleaned_data["email"]
+
+        if commit:
+            user.save()
+            OrganisationProfile.objects.create(
+                user=user,
+                organisation_name=self.cleaned_data["organisation_name"],
+                contact_email=self.cleaned_data["contact_email"],
+                contact_phone=self.cleaned_data["contact_phone"],
+                region=self.cleaned_data["region"],
+            )
+
+        return user
+
