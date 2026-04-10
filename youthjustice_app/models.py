@@ -1,6 +1,39 @@
+from django.conf import settings
+from django.core.exceptions import ValidationError
 from django.db import models
+from django.urls import reverse
 
-# Models are being created here
+
+# Models being created from here
+
+# This model stores extra information about an organisation user
+# Each OrganisationProfile will belongs to one Django user account
+class OrganisationProfile(models.Model):
+    REGION_CHOICES = [
+        ("darwin", "Darwin"),
+        ("alice_springs", "Alice Springs"),
+        ("katherine", "Katherine"),
+        ("tennant_creek", "Tennant Creek"),
+        ("nhulunbuy", "Nhulunbuy"),
+        ("other", "Other"),
+    ]
+
+    # One Django user account has one organisation profile, One to One relationship
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="organisation_profile",
+    )
+
+    # These would be the Organisation details
+    organisation_name = models.CharField(max_length=200)
+    contact_email = models.EmailField()
+    contact_phone = models.CharField(max_length=30, blank=True)
+    region = models.CharField(max_length=50, choices=REGION_CHOICES)
+
+    def __str__(self):
+        return self.organisation_name
+
 class Program(models.Model):
 
     # predefined categories for dropdown selection
@@ -25,6 +58,17 @@ class Program(models.Model):
         ("other", "Other"),
     ]
 
+    # ForeignKey allows one organisation can own many programs, one to many relationship established
+    owner = models.ForeignKey(
+        OrganisationProfile,
+        on_delete=models.CASCADE,
+        related_name="programs",
+        null=True,
+        blank=True,
+    )
+
+    
+    # Program fields here
     name = models.CharField(max_length=200)
     organisation = models.CharField(max_length=200)
 
