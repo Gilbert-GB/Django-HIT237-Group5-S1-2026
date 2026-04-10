@@ -6,7 +6,7 @@ Usage:
     python manage.py import_ctg_data
 
 The CSV file must be placed at:
-    data/ctg-2023-ctg07-employment-education-dataset.csv
+    dataset/ctg-2023-ctg07-employment-education-dataset.csv
 
 What this command does:
     1. Deletes all existing EngagementData records (clean reload)

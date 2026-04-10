@@ -6,7 +6,7 @@ Usage:
     python manage.py import_crime_data
 
 The CSV file must be placed at:
-    data/nt_crime_statistics_aug_2025.csv
+    dataset/nt_crime_statistics_aug_2025.csv
 
 What this command does:
     1. Deletes all existing CrimeData records (clean reload)
