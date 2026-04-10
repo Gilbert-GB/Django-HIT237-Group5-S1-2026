@@ -36,6 +36,8 @@ class OrganisationProfile(models.Model):
     def __str__(self):
         return self.organisation_name
 
+
+# Added by Nawshin
 class Program(models.Model):
 
     # predefined categories for dropdown selection
