@@ -33,4 +33,20 @@ class OrganisationRegisterForm(UserCreationForm):
             )
 
         return user
+    
+# This form is for creating/editing program listings
+class ProgramForm(forms.ModelForm):
+    class Meta:
+        model = Program
+        fields = [
+            "name",
+            "region",
+            "category",
+            "age_min",
+            "age_max",
+            "is_available",
+            "is_featured",
+            "short_description",
+            "website",
+        ]
 
