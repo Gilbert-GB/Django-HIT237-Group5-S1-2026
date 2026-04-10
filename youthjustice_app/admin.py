@@ -1,7 +1,15 @@
 from django.contrib import admin
-from .models import Program, CrimeData, EngagementData
+from .models import Program, CrimeData, EngagementData, OrganisationProfile
 
 # Models are being registered here
+
+@admin.register(OrganisationProfile)
+class OrganisationProfileAdmin(admin.ModelAdmin):
+    list_display = ("organisation_name", "contact_email", "region", "user")
+    search_fields = ("organisation_name", "contact_email", "user__username")
+    list_filter = ("region",)
+    
+    
 class ProgramAdmin(admin.ModelAdmin):
     list_display = ("name", "region", "category", "is_available")
     list_filter = ("region", "category")
