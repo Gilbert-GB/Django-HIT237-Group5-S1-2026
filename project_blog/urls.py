@@ -1,11 +1,7 @@
 from django.contrib import admin
-from django.urls import path
-from youthjustice_app import views
+from django.urls import path, include
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("", views.home, name="home"),
-    path("programs/", views.programs, name="programs"),
-    path("program/<int:program_id>/", views.program_detail, name="program_detail"),
-    path("about/", views.about, name="about"),
+    path("", include("youthjustice_app.urls")),
 ]

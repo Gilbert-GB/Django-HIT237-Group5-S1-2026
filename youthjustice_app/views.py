@@ -3,6 +3,112 @@ from django.shortcuts import render, get_object_or_404
 from .forms import OrganisationRegisterForm, ProgramForm
 from .models import Program
 
+from django.http import JsonResponse
+from django.db.models import Sum
+from youthjustice_app.models import CrimeData
+from .models import CrimeData
+from django.shortcuts import render
+
+def dashboard_page(request):
+    return render(request, "dashboard.html")
+
+def dashboard_data(request):
+    from django.db.models import Sum
+    from django.http import JsonResponse
+    from .models import CrimeData
+
+    # 📊 Monthly Crime Trend
+    monthly_trend = list(
+        CrimeData.objects
+        .values("year", "month")
+        .annotate(total_crimes=Sum("count"))
+        .order_by("year", "month")
+    )
+
+    # 📍 Top Regions
+    top_regions = list(
+        CrimeData.objects
+        .values("region")
+        .annotate(total=Sum("count"))
+        .order_by("-total")[:10]
+    )
+
+    # 🚨 Category Breakdown
+    category_breakdown = list(
+        CrimeData.objects
+        .values("offence_category")
+        .annotate(total=Sum("count"))
+        .order_by("-total")
+    )
+
+    # 🍺 Alcohol Stats
+    alcohol_stats = list(
+        CrimeData.objects
+        .exclude(alcohol_involvement="-")
+        .values("alcohol_involvement")
+        .annotate(total=Sum("count"))
+    )
+
+    # ⚠️ DV Stats
+    dv_stats = list(
+        CrimeData.objects
+        .values("dv_involvement")
+        .annotate(total=Sum("count"))
+    )
+
+    # 🔝 Top Offences
+    top_offences = list(
+        CrimeData.objects
+        .values("offence_type")
+        .annotate(total=Sum("count"))
+        .order_by("-total")[:10]
+    )
+
+    # 📈 Yearly Trend
+    yearly_trend = list(
+        CrimeData.objects
+        .values("year")
+        .annotate(total=Sum("count"))
+        .order_by("year")
+    )
+
+    # 🧠 KPIs
+    total_crimes = CrimeData.objects.aggregate(total=Sum("count"))["total"] or 0
+
+    top_region = (
+        CrimeData.objects
+        .values("region")
+        .annotate(total=Sum("count"))
+        .order_by("-total")
+        .first()
+    )
+
+    top_crime = (
+        CrimeData.objects
+        .values("offence_type")
+        .annotate(total=Sum("count"))
+        .order_by("-total")
+        .first()
+    )
+
+    data = {
+        "kpis": {
+            "total_crimes": total_crimes,
+            "top_region": top_region,
+            "top_crime": top_crime,
+        },
+        "charts": {
+            "monthly_trend": monthly_trend,
+            "top_regions": top_regions,
+            "category_breakdown": category_breakdown,
+            "alcohol_stats": alcohol_stats,
+            "dv_stats": dv_stats,
+            "top_offences": top_offences,
+            "yearly_trend": yearly_trend,
+        }
+    }
+
+    return JsonResponse(data)
 
 def home(request):
     # only showing featured programs on home page
