@@ -64,9 +64,8 @@ Only key attributes (e.g., offence type, location, time, summary values) will be
 ## Rationale  
 This approach ensures the system remains efficient and focused on user needs. It aligns with key design philosophies:
 
-- **DRY (Don’t Repeat Yourself):** avoids repeated file processing  
-- **SQL Efficiency:** enables optimised database queries  
-- **Explicit is Better Than Implicit:** structured models clearly define data usage  
+WILL BE UPDATED!
+ 
 
 ---
 
