@@ -11,6 +11,48 @@ from .models import CrimeData
 from django.shortcuts import render
 from django.http import JsonResponse
 from youthjustice_app.dashboard_service import DashboardService
+from django.shortcuts import render, redirect
+from .forms import ProgramForm
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic import CreateView
+from .models import Program
+
+class ProgramCreateView(LoginRequiredMixin, CreateView):
+    model = Program
+    fields = [
+        "name",
+        "region",
+        "category",
+        "age_min",
+        "age_max",
+        "short_description",
+        "website",
+    ]
+    template_name = "youthjustice_app/add_program.html"
+    success_url = "/programs/"
+    def form_valid(self, form):
+        form.instance.organisation = self.request.user.username
+        return super().form_valid(form)
+
+def add_program(request):
+    if request.method == "POST":
+        form = ProgramForm(request.POST)
+        if form.is_valid():
+            program = form.save(commit=False)
+
+            # link to logged-in organisation
+            if request.user.is_authenticated:
+                try:
+                    program.owner = request.user.organisation_profile
+                except:
+                    pass
+
+            program.save()
+            return redirect("programs")
+    else:
+        form = ProgramForm()
+
+    return render(request, "youthjustice_app/add_program.html", {"form": form})
 
 class DashboardView(TemplateView):
     template_name = "youthjustice_app/dashboard.html"

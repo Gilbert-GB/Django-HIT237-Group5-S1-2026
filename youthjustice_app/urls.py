@@ -2,11 +2,11 @@ from django.contrib import admin
 from django.urls import path
 from youthjustice_app import views
 from youthjustice_app.views import DashboardView
+from .views import add_program
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-
-    # ✅ HTML PAGE
+    path("programs/add/", views.ProgramCreateView.as_view(), name="add_program"),
     path("dashboard/", views.dashboard_page, name="dashboard"),
 
     # ✅ API ENDPOINT

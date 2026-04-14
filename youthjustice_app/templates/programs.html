@@ -39,7 +39,7 @@
             font-size: 14px;
             opacity: 0.95;
         }
-
+        
         .navbar {
             margin-top: 15px;
         }
@@ -52,7 +52,17 @@
             font-weight: bold;
             font-size: 15px;
         }
+        .add-btn {
+            background: #2f6fa3;
+            padding: 8px 14px;
+            border-radius: 8px;
+            color: white;
+            font-weight: bold;
+        }
 
+        .add-btn:hover {
+            background: #1f5c8e;
+        }
         .navbar a:hover {
             text-decoration: underline;
         }
@@ -287,6 +297,7 @@
                 <button type="submit">Filter</button>
             </form>
         </div>
+        <a class="add-btn" href="{% url 'add_program' %}">+ Add Program</a>
 
         <div class="program-grid">
             {% for program in programs %}
