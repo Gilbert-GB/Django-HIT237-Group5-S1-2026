@@ -8,9 +8,9 @@ urlpatterns = [
     # ✅ HTML PAGE
     path("dashboard/", views.dashboard_page, name="dashboard"),
 
-    # ✅ API (data)
+    # ✅ API ENDPOINT
     path("api/dashboard/", views.dashboard_data, name="dashboard_data"),
-
+    path("dashboard/", DashboardView.as_view(), name="dashboard"),
     path("", views.home, name="home"),
     path("programs/", views.programs, name="programs"),
     path("program/<int:program_id>/", views.program_detail, name="program_detail"),

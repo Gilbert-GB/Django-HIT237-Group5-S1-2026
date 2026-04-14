@@ -3,9 +3,7 @@ from youthjustice_app.models import CrimeData
 
 from django.views.generic import TemplateView
 
-class DashboardView(TemplateView):
-    template_name = "youthjustice_app/dashboard.html"
-    
+
 class DashboardService:
     """
     Handles all dashboard-related data queries using Django QuerySets.
