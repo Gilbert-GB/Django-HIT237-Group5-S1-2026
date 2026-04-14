@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.urls import path
 from youthjustice_app import views
+from youthjustice_app.views import DashboardView
 
 urlpatterns = [
     path("admin/", admin.site.urls),
