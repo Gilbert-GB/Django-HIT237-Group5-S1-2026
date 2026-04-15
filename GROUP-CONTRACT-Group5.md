@@ -43,7 +43,7 @@ All team members have reviewed CDU’s academic integrity policies. AI tools may
 
 ## Task Breakdown
 
-- **Gilbert (Lead – Data & System Integration):**
+- **Gilbert (Data & System Integration):**
   - Collect and clean datasets (NT Crime Statistics, AIHW, ABS)
   - Design and implement **Django models and QuerySet APIs**
   - Develop **interactive dashboard (KPIs, charts, trends)**
