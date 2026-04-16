@@ -1,6 +1,6 @@
 {% extends "youthjustice_app/base.html" %}
 
-{% block title %}Add Program | Youth Justice NT{% endblock %}
+{% block title %}Edit Program | Youth Justice NT{% endblock %}
 
 {% block extra_head %}
 <style>
@@ -59,14 +59,14 @@
 
 {% block content %}
 <div class="form-card">
-    <h1>Add Program</h1>
+    <h1>Edit Program</h1>
 
-    <p>This page creates a new youth support program record.</p>
+    <p>This page updates an existing youth support program record.</p>
 
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit" class="btn-primary">Save Program</button>
+        <button type="submit" class="btn-primary">Update Program</button>
     </form>
 
     <a class="back-link" href="{% url 'manage_programs' %}">Back to Program Management</a>

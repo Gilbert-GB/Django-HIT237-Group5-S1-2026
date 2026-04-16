@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>About | Youth Justice NT</title>
-
+    <title>{% block title %}Youth Justice NT{% endblock %}</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             background-color: #f4f7fb;
             margin: 0;
             padding: 0;
+            color: #1c3553;
         }
 
         header {
@@ -61,67 +61,26 @@
             width: 85%;
             margin: 30px auto;
         }
-
-        .about-card {
-            background: linear-gradient(180deg, #ffffff, #f9fcff);
-            padding: 28px;
-            border-radius: 18px;
-            box-shadow: 0 10px 24px rgba(70, 130, 180, 0.12);
-            border: 1px solid rgba(70, 130, 180, 0.12);
-        }
-
-        .about-card h2 {
-            margin-top: 0;
-            color: #1c3553;
-            font-size: 28px;
-        }
-
-        .about-card p {
-            color: #334;
-            line-height: 1.8;
-            font-size: 15px;
-            margin-bottom: 18px;
-        }
     </style>
+    {% block extra_head %}{% endblock %}
 </head>
 <body>
-
     <header>
         <h1>Youth Justice NT</h1>
         <p>Supporting youth diversion and community programs across the Northern Territory</p>
-
-       <div class="navbar">
+        <div class="navbar">
             <a href="{% url 'home' %}">Home</a>
             <a href="{% url 'dashboard' %}">Dashboard</a>
             <a href="{% url 'programs' %}">Programs</a>
             <a href="{% url 'about' %}">About</a>
+            <a href="{% url 'manage_programs' %}">Manage Programs</a>
             <a href="/admin/">Admin</a>
         </div>
     </header>
 
     <div class="container">
-        <div class="about-card">
-            <h2>About Youth Justice NT</h2>
-
-            <p>
-                Youth Justice NT is a Django-based web application created to make youth diversion and support
-                programs across the Northern Territory easier to find and understand. Instead of searching through
-                different websites separately, users can access important program details in one place.
-            </p>
-
-            <p>
-                This project focuses on alternatives to detention by highlighting support services such as diversion,
-                mentoring, throughcare, education, and community-based programs. The aim is to make these services
-                more visible and accessible for users.
-            </p>
-
-            <p>
-                The system includes useful features such as searching, filtering by region and category, sorting,
-                featured programs, availability status, and detailed program pages. These features help users browse
-                programs more clearly and quickly.
-            </p>
-        </div>
+        {% block content %}{% endblock %}
     </div>
-
+    {% block extra_scripts %}{% endblock %}
 </body>
 </html>

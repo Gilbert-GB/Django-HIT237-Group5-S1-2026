@@ -1,33 +1,71 @@
 from django.contrib import admin
-from .models import Program, CrimeData, EngagementData
-
-# Models are being registered here
+from .models import Organisation, Program, CrimeDataSnapshot, CrimeData, EngagementData
 
 
-class OrganisationProfileAdmin(admin.ModelAdmin):
-    list_display = ("organisation_name", "contact_email", "region", "user")
-    search_fields = ("organisation_name", "contact_email", "user__username")
-    list_filter = ("region",)
+# ORGANISATION ADMIN
+
+@admin.register(Organisation)
+class OrganisationAdmin(admin.ModelAdmin):
+    list_display = ("name", "organisation_type", "email", "phone", "created_at")
+    search_fields = ("name", "email", "phone")
+    list_filter = ("organisation_type",)
 
 
+
+# PROGRAM ADMIN
+
+@admin.register(Program)
 class ProgramAdmin(admin.ModelAdmin):
-    list_display = ("name", "region", "category", "is_available")
-    list_filter = ("region", "category")
-    search_fields = ("name", "organisation")
+    list_display = (
+        "name",
+        "organisation",
+        "region",
+        "category",
+        "is_available",
+        "is_featured",
+        "created_at",
+    )
+    search_fields = ("name", "organisation__name", "short_description")
+    list_filter = ("region", "category", "is_available", "is_featured")
+    list_select_related = ("organisation",)
 
-admin.site.register(Program, ProgramAdmin)
+# ============================================================
+# CRIME DATA SNAPSHOT ADMIN
+# ============================================================
+@admin.register(CrimeDataSnapshot)
+class CrimeDataSnapshotAdmin(admin.ModelAdmin):
+    list_display = ("program", "region", "year", "total_offences", "created_at")
+    search_fields = ("program__name", "region", "summary")
+    list_filter = ("region", "year")
+    list_select_related = ("program",)
 
 
+# CRIME DATA ADMIN
+
+@admin.register(CrimeData)
 class CrimeDataAdmin(admin.ModelAdmin):
-    list_display = ("region", "offence_category", "year", "month", "count")
-    list_filter = ("region", "year", "offence_category")
-    search_fields = ("offence_category", "offence_type", "region")
+    list_display = (
+        "region",
+        "year",
+        "month",
+        "offence_category",
+        "offence_type",
+        "count",
+    )
+    search_fields = ("region", "offence_category", "offence_type")
+    list_filter = ("region", "year", "month")
 
-admin.site.register(CrimeData, CrimeDataAdmin)
 
+# ENGAGEMENT DATA ADMIN
 
+@admin.register(EngagementData)
 class EngagementDataAdmin(admin.ModelAdmin):
-    list_display = ("year", "sex", "indigenous_status", "value_nt", "value_national")
+    list_display = (
+        "year",
+        "sex",
+        "indigenous_status",
+        "value_nt",
+        "value_national",
+    )
+    search_fields = ("indigenous_status", "sex", "measure")
     list_filter = ("year", "sex", "indigenous_status")
-
-admin.site.register(EngagementData, EngagementDataAdmin)

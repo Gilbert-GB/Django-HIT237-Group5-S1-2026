@@ -1,98 +1,135 @@
-from django.shortcuts import render, get_object_or_404
-from django.views.generic import TemplateView
-
-from .forms import ProgramForm
-from .models import Program
-
-from django.http import JsonResponse
 from django.db.models import Sum
-from youthjustice_app.models import CrimeData
-from .models import CrimeData
-from django.shortcuts import render
 from django.http import JsonResponse
-from youthjustice_app.dashboard_service import DashboardService
-from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404, render
+from django.urls import reverse_lazy
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+
 from .forms import ProgramForm
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import CreateView
-from .models import Program
+from .models import Program, CrimeData
 
-class ProgramCreateView(LoginRequiredMixin, CreateView):
-    model = Program
-    fields = [
-        "name",
-        "region",
-        "category",
-        "age_min",
-        "age_max",
-        "short_description",
-        "website",
-    ]
-    template_name = "youthjustice_app/add_program.html"
-    success_url = "/programs/"
-    def form_valid(self, form):
-        form.instance.organisation = self.request.user.username
-        return super().form_valid(form)
 
-def add_program(request):
-    if request.method == "POST":
-        form = ProgramForm(request.POST)
-        if form.is_valid():
-            program = form.save(commit=False)
+# PUBLIC PAGES
 
-            # link to logged-in organisation
-            if request.user.is_authenticated:
-                try:
-                    program.owner = request.user.organisation_profile
-                except:
-                    pass
+def home(request):
+    """
+    Home page:
+    """
 
-            program.save()
-            return redirect("programs")
-    else:
-        form = ProgramForm()
+    featured_programs = (
+        Program.objects.featured()
+        .select_related("organisation")
+    )
 
-    return render(request, "youthjustice_app/add_program.html", {"form": form})
+    total_programs = Program.objects.count()
+    total_featured = Program.objects.featured().count()
+    total_available = Program.objects.available().count()
 
-class DashboardView(TemplateView):
-    template_name = "youthjustice_app/dashboard.html"
+    context = {
+        "featured_programs": featured_programs,
+        "total_programs": total_programs,
+        "total_featured": total_featured,
+        "total_available": total_available,
+    }
+    return render(request, "youthjustice_app/home.html", context)
+
+
+def programs(request):
+    """
+    Public program list page.
+    """
+
+    search_query = request.GET.get("search", "").strip()
+    selected_region = request.GET.get("region", "").strip()
+    selected_category = request.GET.get("category", "").strip()
+    selected_sort = request.GET.get("sort", "").strip()
+
+    program_list = Program.objects.available().select_related("organisation")
+
+    if search_query:
+        program_list = Program.objects.search(search_query).select_related("organisation")
+
+    if selected_region:
+        program_list = program_list.filter(region=selected_region)
+
+    if selected_category:
+        program_list = program_list.filter(category=selected_category)
+
+    # Sorting
+    if selected_sort == "name_asc":
+        program_list = program_list.order_by("name")
+    elif selected_sort == "name_desc":
+        program_list = program_list.order_by("-name")
+
+    context = {
+        "programs": program_list,
+        "search_query": search_query,
+        "selected_region": selected_region,
+        "selected_category": selected_category,
+        "selected_sort": selected_sort,
+        "region_choices": Program.REGION_CHOICES,
+        "category_choices": Program.CATEGORY_CHOICES,
+    }
+    return render(request, "youthjustice_app/programs.html", context)
+
+
+def program_detail(request, pk):
+    program = get_object_or_404(
+        Program.objects.select_related("organisation"),
+        pk=pk
+    )
+    return render(
+        request,
+        "youthjustice_app/program_detail.html",
+        {"program": program},
+    )
+
+
+def about(request):
+    return render(request, "youthjustice_app/about.html")
+
+
+# DASHBOARD
+
+def dashboard_page(request):
+    return render(request, "youthjustice_app/dashboard.html")
+
 
 def dashboard_data(request):
+    """
+    Filters:
+    - region
+    - year
+    """
 
     region = request.GET.get("region")
     year = request.GET.get("year")
 
     data = CrimeData.objects.all()
 
-    # 🎯 FILTERS
     if region:
         data = data.filter(region=region)
 
     if year:
         data = data.filter(year=year)
 
-    # 📊 Monthly trend
     monthly_trend = list(
         data.values("year", "month")
         .annotate(total_crimes=Sum("count"))
         .order_by("year", "month")
     )
 
-    # 📍 Top regions (bar chart)
     top_regions = list(
         data.values("region")
         .annotate(total=Sum("count"))
         .order_by("-total")[:10]
     )
 
-    # 🥧 Crime categories (pie chart)
     category_breakdown = list(
         data.values("offence_category")
         .annotate(total=Sum("count"))
         .order_by("-total")[:10]
     )
 
-    # 🧠 KPIs
     total_crimes = data.aggregate(total=Sum("count"))["total"] or 0
 
     top_region = (
@@ -121,74 +158,54 @@ def dashboard_data(request):
             "category_breakdown": category_breakdown,
         }
     })
+    
+# MANAGEMENT / CRUD Section
 
-def dashboard_page(request):
-    return render(request, "dashboard.html")
+# Class-based views for managing programs (CRUD)
+# Uses reverse_lazy to redirect back to manage_programs after successful creation, update, or deletion
 
-def home(request):
-    # only showing featured programs on home page
-    featured_programs = Program.objects.filter(is_featured=True)
+class ProgramManageListView(ListView):
+    """
+    Shows all programs in one place for easy management and appealing UI
+    """
+    model = Program
+    template_name = "youthjustice_app/manage_programs.html"
+    context_object_name = "programs"
+    ordering = ["name"]
 
-    # numbers for the home page cards
-    total_programs = Program.objects.count()
-    total_featured = Program.objects.filter(is_featured=True).count()
-    total_available = Program.objects.filter(is_available=True).count()
-
-    context = {
-        "featured_programs": featured_programs,
-        "total_programs": total_programs,
-        "total_featured": total_featured,
-        "total_available": total_available,
-    }
-
-    return render(request, "home.html", context)
-
-
-def programs(request):
-    # getting values from the URL
-    search_query = request.GET.get("search", "")
-    selected_region = request.GET.get("region", "")
-    selected_category = request.GET.get("category", "")
-    selected_sort = request.GET.get("sort", "")
-
-    programs = Program.objects.all()
-
-    # search by program name
-    if search_query:
-        programs = programs.filter(name__icontains=search_query)
-
-    # filter by region
-    if selected_region:
-        programs = programs.filter(region=selected_region)
-
-    # filter by category
-    if selected_category:
-        programs = programs.filter(category=selected_category)
-
-    # sorting options
-    if selected_sort == "name_asc":
-        programs = programs.order_by("name")
-    elif selected_sort == "name_desc":
-        programs = programs.order_by("-name")
-
-    context = {
-        "programs": programs,
-        "search_query": search_query,
-        "selected_region": selected_region,
-        "selected_category": selected_category,
-        "selected_sort": selected_sort,
-        "region_choices": Program.REGION_CHOICES,
-        "category_choices": Program.CATEGORY_CHOICES,
-    }
-
-    return render(request, "programs.html", context)
+    def get_queryset(self):
+        """
+        select_related('organisation') 
+        """
+        return Program.objects.select_related("organisation").all().order_by("name")
 
 
-def program_detail(request, program_id):
-    # showing one program based on id
-    program = get_object_or_404(Program, id=program_id)
-    return render(request, "program_detail.html", {"program": program})
+class ProgramCreateView(CreateView):
+    """
+    Create a new program.
+    Uses ProgramForm automatically
+    """
+    model = Program
+    form_class = ProgramForm
+    template_name = "youthjustice_app/add_program.html"
+    success_url = reverse_lazy("manage_programs")
 
 
-def about(request):
-    return render(request, "about.html")
+class ProgramUpdateView(UpdateView):
+    """
+    Editing an existing program.
+    Reuses the same form as the create view.
+    """
+    model = Program
+    form_class = ProgramForm
+    template_name = "youthjustice_app/edit_program.html"
+    success_url = reverse_lazy("manage_programs")
+
+
+class ProgramDeleteView(DeleteView):
+    """
+    Delete an existing program
+    """
+    model = Program
+    template_name = "youthjustice_app/delete_program.html"
+    success_url = reverse_lazy("manage_programs")

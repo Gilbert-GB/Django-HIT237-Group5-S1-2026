@@ -1,0 +1,266 @@
+{% extends "youthjustice_app/base.html" %}
+
+{% block title %}Programs | Youth Justice NT{% endblock %}
+
+{% block extra_head %}
+<style>
+    .add-btn {
+        display: inline-block;
+        margin-bottom: 22px;
+        background: #2f6fa3;
+        padding: 10px 14px;
+        border-radius: 8px;
+        color: white;
+        font-weight: 700;
+        text-decoration: none;
+    }
+
+    .add-btn:hover {
+        background: #1f5c8e;
+    }
+
+    .page-intro {
+        background: linear-gradient(180deg, #ffffff, #f9fcff);
+        padding: 24px;
+        border-radius: 18px;
+        box-shadow: 0 10px 24px rgba(70, 130, 180, 0.12);
+        border: 1px solid rgba(70, 130, 180, 0.12);
+        margin-bottom: 30px;
+    }
+
+    .page-intro h2 {
+        margin-top: 0;
+        color: #1c3553;
+    }
+
+    .page-intro p {
+        color: #334;
+        line-height: 1.7;
+        margin-bottom: 0;
+    }
+
+    .region-links {
+        margin-bottom: 25px;
+    }
+
+    .region-links a {
+        display: inline-block;
+        margin-right: 10px;
+        margin-bottom: 10px;
+        padding: 10px 16px;
+        background: white;
+        color: #2f6fa3;
+        text-decoration: none;
+        border-radius: 999px;
+        box-shadow: 0 6px 14px rgba(70, 130, 180, 0.10);
+        border: 1px solid rgba(70, 130, 180, 0.12);
+        font-weight: 600;
+    }
+
+    .region-links a:hover {
+        background-color: #eef7fd;
+    }
+
+    .search-box {
+        margin-bottom: 30px;
+    }
+
+    .search-box input[type="text"] {
+        padding: 10px;
+        width: 220px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+    }
+
+    .search-box select {
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        margin-left: 8px;
+    }
+
+    .search-box button {
+        padding: 10px 16px;
+        border: none;
+        background-color: #2f6fa3;
+        color: white;
+        border-radius: 8px;
+        cursor: pointer;
+        margin-left: 8px;
+        font-weight: 600;
+    }
+
+    .search-box button:hover {
+        background-color: #1f5c8e;
+    }
+
+    .program-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 22px;
+    }
+
+    .program-card {
+        background: linear-gradient(180deg, #ffffff, #f9fcff);
+        padding: 22px;
+        border-radius: 18px;
+        box-shadow: 0 10px 24px rgba(70, 130, 180, 0.12);
+        border: 1px solid rgba(70, 130, 180, 0.12);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .program-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 14px 30px rgba(70, 130, 180, 0.18);
+    }
+
+    .program-card h3 {
+        margin-top: 0;
+        margin-bottom: 12px;
+        font-size: 20px;
+        line-height: 1.4;
+    }
+
+    .program-card h3 a {
+        text-decoration: none;
+        color: #1c3553;
+    }
+
+    .program-card h3 a:hover {
+        color: #4682B4;
+    }
+
+    .program-card p {
+        margin: 9px 0;
+        color: #334;
+        line-height: 1.6;
+        font-size: 14px;
+    }
+
+    .program-card a {
+        display: inline-block;
+        margin-top: 14px;
+        text-decoration: none;
+        color: #2f6fa3;
+        font-weight: 600;
+    }
+
+    .program-card a:hover {
+        color: #1c3553;
+    }
+
+    .status-badge {
+        display: inline-block;
+        padding: 7px 14px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 700;
+        margin-bottom: 14px;
+        letter-spacing: 0.3px;
+    }
+
+    .available {
+        background-color: #e6f7ec;
+        color: #1f7a36;
+        border: 1px solid #cdeed8;
+    }
+
+    .unavailable {
+        background-color: #fdeced;
+        color: #a12634;
+        border: 1px solid #f7cfd4;
+    }
+
+    .empty-message {
+        background: white;
+        padding: 18px;
+        border-radius: 14px;
+        box-shadow: 0 8px 18px rgba(70, 130, 180, 0.08);
+        border: 1px solid rgba(70, 130, 180, 0.10);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-intro">
+    <h2>All Programs</h2>
+    <p>
+        Browse all youth diversion and support programs in one place.
+        You can search, filter by region and category, and sort alphabetically.
+    </p>
+</div>
+
+<div class="region-links">
+    <a href="{% url 'programs' %}">All</a>
+    {% for value, label in region_choices %}
+        <a href="?region={{ value }}">{{ label }}</a>
+    {% endfor %}
+</div>
+
+<div class="search-box">
+    <form method="GET">
+        <input type="text" name="search" placeholder="Search programs" value="{{ search_query }}">
+
+        <select name="region">
+            <option value="">All Regions</option>
+            {% for value, label in region_choices %}
+                <option value="{{ value }}" {% if selected_region == value %}selected{% endif %}>
+                    {{ label }}
+                </option>
+            {% endfor %}
+        </select>
+
+        <select name="category">
+            <option value="">All Categories</option>
+            {% for value, label in category_choices %}
+                <option value="{{ value }}" {% if selected_category == value %}selected{% endif %}>
+                    {{ label }}
+                </option>
+            {% endfor %}
+        </select>
+
+        <select name="sort">
+            <option value="">Sort By</option>
+            <option value="name_asc" {% if selected_sort == "name_asc" %}selected{% endif %}>Name A to Z</option>
+            <option value="name_desc" {% if selected_sort == "name_desc" %}selected{% endif %}>Name Z to A</option>
+        </select>
+
+        <button type="submit">Filter</button>
+    </form>
+</div>
+
+<a class="add-btn" href="{% url 'add_program' %}">+ Add Program</a>
+
+<div class="program-grid">
+    {% for program in programs %}
+        <div class="program-card">
+
+            {% if program.is_available %}
+                <span class="status-badge available">Available</span>
+            {% else %}
+                <span class="status-badge unavailable">Not Available</span>
+            {% endif %}
+
+            <h3>
+                <a href="{% url 'program_detail' program.id %}">
+                    {{ program.name }}
+                </a>
+            </h3>
+
+            <p><strong>Organisation:</strong> {{ program.organisation.name }}</p>
+            <p><strong>Region:</strong> {{ program.get_region_display }}</p>
+            <p><strong>Category:</strong> {{ program.get_category_display }}</p>
+            <p><strong>Age:</strong> {{ program.age_min }} - {{ program.age_max }}</p>
+            <p>{{ program.short_description }}</p>
+
+            {% if program.website %}
+                <a href="{{ program.website }}" target="_blank">Visit Website</a>
+            {% endif %}
+        </div>
+    {% empty %}
+        <div class="empty-message">
+            No programs found
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}
