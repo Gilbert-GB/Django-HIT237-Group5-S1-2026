@@ -16,8 +16,6 @@ The project must include a browsable public site and a management area for CRUD.
 **Cons**
 - Poor separation of concerns
 - Harder to test and maintain
-- Harder to explain in viva
-
 ### Option 2: Keep data rules in models/managers, input structure in forms, request handling in views, and display in templates
 **Pros**
 - Cleaner architecture
