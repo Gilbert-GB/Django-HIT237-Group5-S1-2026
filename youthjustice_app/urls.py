@@ -1,19 +1,20 @@
-from django.contrib import admin
 from django.urls import path
-from youthjustice_app import views
-from youthjustice_app.views import DashboardView
-from .views import add_program
+from . import views
 
 urlpatterns = [
-    path("admin/", admin.site.urls),
-    path("programs/add/", views.ProgramCreateView.as_view(), name="add_program"),
-    path("dashboard/", views.dashboard_page, name="dashboard"),
-
-    # ✅ API ENDPOINT
-    path("api/dashboard/", views.dashboard_data, name="dashboard_data"),
-    path("dashboard/", DashboardView.as_view(), name="dashboard"),
+    # Public pages
     path("", views.home, name="home"),
-    path("programs/", views.programs, name="programs"),
-    path("program/<int:program_id>/", views.program_detail, name="program_detail"),
     path("about/", views.about, name="about"),
+    path("programs/", views.programs, name="programs"),
+    path("programs/<int:pk>/", views.program_detail, name="program_detail"),
+
+    # Dashboard
+    path("dashboard/", views.dashboard_page, name="dashboard"),
+    path("api/dashboard/", views.dashboard_data, name="dashboard_data"),
+
+    # Separate CRUD / management pages
+    path("manage/programs/", views.ProgramManageListView.as_view(), name="manage_programs"),
+    path("manage/programs/add/", views.ProgramCreateView.as_view(), name="add_program"),
+    path("manage/programs/<int:pk>/edit/", views.ProgramUpdateView.as_view(), name="edit_program"),
+    path("manage/programs/<int:pk>/delete/", views.ProgramDeleteView.as_view(), name="delete_program"),
 ]
