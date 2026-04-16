@@ -52,11 +52,30 @@ All team members have reviewed CDU’s academic integrity policies. AI tools may
   - Support frontend integration (Chart.js visualisation)
   - Manage GitHub integration and resolve merge conflicts
 
+- **Ahmad (Architecture, Backend Refactoring & Documentation):**
+  - Led **architecture refinement** of the Django app to better align with the rubric and assignment requirements
+  - Designed and documented **model relationships**, including adding the `Organisation` model and linking it to `Program`
+  - Reworked the **backend structure** using existing team logic, reorganising the app into a cleaner and more maintainable design
+  - Implemented and finalised **CRUD functionality** for programs in views and templates
+  - Created and updated **forms** for program data handling
+  - Designed and implemented **custom managers**, including moving managers into a separate file for cleaner separation of concerns
+  - Improved **URL and view structure** to support clearer public pages and management pages
+  - Finalised **template structure and shared frontend layout** for consistent app design
+  - Wrote and refined major **Architectural Decision Records (ADRs)**, including:
+    - model relationships
+    - CRUD design
+    - separate managers
+    - Django design philosophies
+  - Created supporting **ERDs, class diagrams, and architecture diagrams**
+  - Reviewed the project against the **assessment rubric** and identified missing areas for improvement
+  - Helped rebuild the app backend in a cleaner structure suitable for viva explanation and final submission
+
 - **All Members:**
   - Research youth justice policies and community programs  
   - Contribute to testing and feedback  
+  - Finalsed project submission after reviewing final draft
 
-- **Mahathir & Ahmad:**
+- **Mahathir:**
   - System design (architecture, database structure)
   - Documentation writing (reports, ADRs)
 
