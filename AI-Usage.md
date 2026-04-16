@@ -1,5 +1,3 @@
-# AI-USAGE.md
-
 ## AI Acknowledgement
 
 This project used AI tools, including ChatGPT, to support the development process. AI assistance was used to help explain Django concepts, review the repository against the rubric, suggest improvements to the model structure, propose CRUD page organisation, identify inconsistencies in URLs and templates to ensure timely completion of this assignment.
