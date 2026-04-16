@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Program, CrimeData, EngagementData
+from .models import Organisation, Program, CrimeDataSnapshot, CrimeData, EngagementData
 
 # Models are being registered here
 
