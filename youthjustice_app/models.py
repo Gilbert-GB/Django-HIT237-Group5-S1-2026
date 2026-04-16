@@ -166,3 +166,171 @@ class Program(models.Model):
     def __str__(self):
         return self.name
 
+
+# CRIME DATA SNAPSHOT MODEL
+
+# Relationship:
+# Program (1) -----> (many) CrimeDataSnapshot
+
+# related to a program, region, and year.
+
+class CrimeDataSnapshot(models.Model):
+    program = models.ForeignKey(
+        Program,
+        on_delete=models.CASCADE,
+        related_name="crime_snapshots",
+    )
+
+    year = models.IntegerField()
+    region = models.CharField(max_length=100)
+    summary = models.TextField()
+    total_offences = models.PositiveIntegerField(default=0)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-year", "program__name"]
+
+    def clean(self):
+        if self.year < 2000:
+            raise ValidationError("Year must be 2000 or later.")
+        if self.total_offences < 0:
+            raise ValidationError("Total offences cannot be negative.")
+
+    def __str__(self):
+        return f"{self.program.name} - {self.region} ({self.year})"
+
+
+# CRIME DATA MODEL
+
+class CrimeData(models.Model):
+    MONTH_NAMES = {
+        1: "January",
+        2: "February",
+        3: "March",
+        4: "April",
+        5: "May",
+        6: "June",
+        7: "July",
+        8: "August",
+        9: "September",
+        10: "October",
+        11: "November",
+        12: "December",
+    }
+
+    year = models.IntegerField()
+    month = models.IntegerField()
+    offence_category = models.CharField(max_length=200)
+    offence_type = models.CharField(max_length=200)
+    alcohol_involvement = models.CharField(max_length=20, default="-")
+    dv_involvement = models.CharField(max_length=20, default="-")
+    region = models.CharField(max_length=100)
+    count = models.IntegerField(default=0)
+
+    objects = CrimeDataManager()
+
+    class Meta:
+        verbose_name = "Crime Statistic"
+        verbose_name_plural = "Crime Statistics"
+        ordering = ["-year", "-month"]
+
+    def clean(self):
+        if self.year and self.year < 2000:
+            raise ValidationError("Year must be 2000 or later.")
+        if self.month and (self.month < 1 or self.month > 12):
+            raise ValidationError("Month must be between 1 and 12.")
+        if self.count is not None and self.count < 0:
+            raise ValidationError("Offence count cannot be negative.")
+
+    @property
+    def month_name(self):
+        return self.MONTH_NAMES.get(self.month, "Unknown")
+
+    @property
+    def period_display(self):
+        return f"{self.month_name} {self.year}"
+
+    @property
+    def is_alcohol_related(self):
+        return self.alcohol_involvement == "Yes"
+
+    @property
+    def is_dv_related(self):
+        return self.dv_involvement == "Yes"
+
+    @property
+    def offence_category_short(self):
+        parts = self.offence_category.split(" ", 1)
+        if len(parts) > 1 and parts[0].isdigit():
+            return parts[1]
+        return self.offence_category
+
+    def __str__(self):
+        return f"{self.region} - {self.offence_category_short} ({self.period_display})"
+
+
+# ENGAGEMENT DATA MODEL
+
+# Imported from CSV and used mainly for dashboard analysis.
+
+class EngagementData(models.Model):
+    year = models.IntegerField()
+    sex = models.CharField(max_length=30)
+    indigenous_status = models.CharField(max_length=100)
+    measure = models.CharField(max_length=300)
+    value_nt = models.FloatField(null=True, blank=True)
+    value_national = models.FloatField(null=True, blank=True)
+
+    objects = EngagementDataManager()
+
+    class Meta:
+        verbose_name = "Engagement Record"
+        verbose_name_plural = "Engagement Data"
+        ordering = ["-year"]
+
+    def clean(self):
+        if self.year and self.year < 2000:
+            raise ValidationError("Year must be 2000 or later.")
+        if self.value_nt is not None and (self.value_nt < 0 or self.value_nt > 100):
+            raise ValidationError("NT value must be between 0 and 100.")
+        if self.value_national is not None and (
+            self.value_national < 0 or self.value_national > 100
+        ):
+            raise ValidationError("National value must be between 0 and 100.")
+
+    @property
+    def nt_display(self):
+        if self.value_nt is not None:
+            return f"{self.value_nt:.1f}%"
+        return "N/A"
+
+    @property
+    def national_display(self):
+        if self.value_national is not None:
+            return f"{self.value_national:.1f}%"
+        return "N/A"
+
+    @property
+    def gap(self):
+        if self.value_nt is not None and self.value_national is not None:
+            return round(self.value_nt - self.value_national, 1)
+        return None
+
+    @property
+    def gap_display(self):
+        g = self.gap
+        if g is not None:
+            sign = "+" if g >= 0 else ""
+            return f"{sign}{g}%"
+        return "N/A"
+
+    @property
+    def is_below_national(self):
+        g = self.gap
+        if g is not None:
+            return g < 0
+        return None
+
+    def __str__(self):
+        return f"{self.indigenous_status} - {self.sex} ({self.year})"
