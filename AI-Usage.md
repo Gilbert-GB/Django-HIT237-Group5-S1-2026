@@ -24,4 +24,4 @@ The group remained responsible for:
 
 ## Why AI was used
 
-In this project, AI was used as a support tool to improve understanding and productivity, not as a replacement for human reasoning or learning but to scaffold implementation and human design ideas.
+In this project, AI was used as a support tool to improve understanding and productivity, not as a replacement for human reasoning or learning but to scaffold implementation and our Team`s design ideas.
