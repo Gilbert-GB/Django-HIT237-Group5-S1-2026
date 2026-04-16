@@ -3,6 +3,7 @@
 ## Project Theme
 Our project focuses on youth justice in the Northern Territory by developing a platform that provides a searchable directory of youth diversion and support programs. The system will use public datasets such as NT Crime Statistics, AIHW Youth Justice data, Closing the Gap, and ABS Recorded Crime to support awareness and decision-making.
 
+We are aiming for at least Distinction for this unit.
 ---
 
 ## Section 1: Terms and Conditions of Group Work
@@ -19,11 +20,11 @@ Tasks will be assigned during team meetings and can also be tracked through Micr
 ### Diverse Working Styles
 We recognise that team members may have different schedules, learning speeds, and personal commitments. The group will allow flexible working arrangements and support each other where needed. Deadlines and expectations will be discussed openly to ensure fairness. Clear communication will be maintained so that all members can contribute effectively regardless of their working style.
 
-### Conflict Resoluion
-Since all the roles allocated in project development would be mutually agreed uopn, all members are expected to perform their tasks appropriately and in time. But in any conflict, all members of team shall mutually re-discuss their positions based on group-contract and try to find an immediate resolution since whole group progress would be hampered in any such scenario and workload on other team members would increase. If a solution cannot be found then the teaching team shall be contacted to suggest a justified resolution.
+### Conflict Resolution
+Since all roles allocated in project development are mutually agreed upon, all members are expected to perform their tasks appropriately and on time. In any conflict, members will re-discuss their responsibilities based on this group contract and aim to reach a quick resolution. If unresolved, the teaching team will be consulted.
 
 ### Academic Integrity
-All team members are understood to have gone through CDU`s academic integrity policies and code of conduct. If any such concern arises, it will be immediately addressed in the Team before submitting the project updates. AI tools are permitted to be used in the Project but strictly for learning purpose, sccafolding implementation and generating code efficiently. Team members are required to have full understanding and testing knowledge of the coding contribution as per their roles and clearly reference AI where needed.
+All team members have reviewed CDU’s academic integrity policies. AI tools may be used for learning, scaffolding, and improving efficiency, but all members must fully understand and test the code they contribute. Any AI-assisted content will be appropriately acknowledged where required.
 
 ---
 
@@ -34,37 +35,73 @@ All team members are understood to have gone through CDU`s academic integrity po
 - Week 4: Collect and review data sources (NT crime data, AIHW, ABS)  
 - Week 5-6: Design system structure and database  
 - Week 7: Draft and submit Assessment 2  
-- Week 8-9: Develop features (search, filters, program listings)  
+- Week 8-9: Develop features (search, filters, program listings, dashboard)  
 - Week 10: Draft Assessment 4  
 - Week 11–12: Testing, improvements, and final submission  
 
-### Task Breakdown
-- Gilbert: Data collection and analysis (NT crime statistics, AIHW, ABS)  
-- All Members: Research youth justice policies and community programs  
-- Mahathir and Ahmad: System design and documentation writing  
-- All members with Gilbert's Lead: GitHub management, integration
-- Nawshin: Django model development, program page implementation, template updates and final review
+---
 
-### Checkpoints
-- Weekly meetings to review progress
-- Data review checkpoint (Week 4)
-- Draft review before assessment 2
-- Final review before assessment 4 submission
+## Task Breakdown
 
-### Integration
-All work will be uploaded to GitHub and merged regularly. One member will manage final integration, but all members must review and approve before submission.
+- **Gilbert (Data & System Integration):**
+  - Collect and clean datasets (NT Crime Statistics, AIHW, ABS)
+  - Design and implement **Django models and QuerySet APIs**
+  - Develop **interactive dashboard (KPIs, charts, trends)**
+  - Implement **filters (region, category, year) using QuerySets**
+  - Lead **backend integration (views, APIs, JSON responses)**
+  - Support frontend integration (Chart.js visualisation)
+  - Manage GitHub integration and resolve merge conflicts
+
+- **Ahmad (Architecture, Backend Refactoring & Documentation):**
+  - Led **architecture refinement** of the Django app to better align with the rubric and assignment requirements
+  - Designed and documented **model relationships**, including adding the `Organisation` model and linking it to `Program`
+  - Reworked the **backend structure** using existing team logic, reorganising the app into a cleaner and more maintainable design
+  - Implemented and finalised **CRUD functionality** for programs in views and templates
+  - Created and updated **forms** for program data handling
+  - Designed and implemented **custom managers**, including moving managers into a separate file for cleaner separation of concerns
+  - Improved **URL and view structure** to support clearer public pages and management pages
+  - Finalised **template structure and shared frontend layout** for consistent app design
+  - Wrote and refined major **Architectural Decision Records (ADRs)**, including:
+    - model relationships
+    - CRUD design
+    - separate managers
+    - Django design philosophies
+  - Created supporting **ERDs, class diagrams, and architecture diagrams**
+  - Reviewed the project against the **assessment rubric** and identified missing areas for improvement
+  - Helped rebuild the app backend in a cleaner structure suitable for viva explanation and final submission
+
+- **All Members:**
+  - Research youth justice policies and community programs  
+  - Contribute to testing and feedback  
+  - Finalsed project submission after reviewing final draft
+
+- **Mahathir:**
+  - System design (architecture, database structure)
+  - Documentation writing (reports, ADRs)
+
+- **Nawshin:**
+  - Final review and submission
+  - Quality checking (formatting, consistency, completeness)
+
+---
+
+## Checkpoints
+- Weekly meetings to review progress  
+- Data review checkpoint (Week 4)  
+- Draft review before Assessment 2  
+- Final review before Assessment 4 submission  
+
+---
+
+## Integration
+All work will be uploaded to GitHub and merged regularly. Gilbert will lead integration of backend and dashboard features, while all members are responsible for reviewing and approving changes before submission.
 
 ---
 
 ## Data Sources (Gilbert)
-- NT Crime Statistics (monthly data by offence and location) 
-
-
-- AIHW Youth Justice in Australia reports (NT-specific data)
-![Australian youth justice supervision statistics dashboard showing 4,227 young people under supervision on average daily in 2023-24, with breakdowns by state, Indigenous status (53% First Nations), sex (80% male), and age groups (162 aged 10-13, 3,102 aged 14-17, 963 aged 18 and over)](Image\Dashboard_AIHW_youth_justice.png)
-![Table 2.1a and 2.1b: Number of young people under supervision by supervision type and state and territory, 2023-24. Table 2.1a shows average daily numbers and during-the-year counts across NSW, Victoria, Queensland, Western Australia, South Australia, Tasmania, ACT, and NT. Community supervision averages 3,470.6 daily nationally with 8,031 during the year. Detention averages 826.8 daily with 4,578 during the year. Table 2.1b presents rates per 10,000 population with community supervision at 10.0 per 10,000 daily and 25.1 during the year. Detention rates are 2.7 per 10,000 daily and 16.5 during the year. Queensland and ACT show highest rates. Asterisks indicate ACT and NT data limitations. Data source: Australian Institute of Health and Welfare, 2023-24.](Image\AIHW_Australia_Youth_Justice.png)  
-- Closing the Gap dashboard (youth engagement data) 
-![Figure CtG7.2 showing engagement rates for Aboriginal and Torres Strait Islander people aged 15-24 years in Northern Territory. Males: 41% in 2016, 35% in 2021. Females: 37% in 2016, 34% in 2021. Blue bars represent males, tan bars represent females. Data from Productivity Commission Closing the Gap dashboard, table CtG7A.2. Both sexes show declining engagement in employment, education or training between 2016 and 2021.](Image\Closing_the_gap_data_by_sex.png)
+- NT Crime Statistics (monthly data by offence and location)  
+- AIHW Youth Justice in Australia reports (NT-specific data)  
+- Closing the Gap dashboard (youth engagement data)  
 - ABS Recorded Crime — Offenders data  
 
 ---
@@ -73,9 +110,7 @@ All work will be uploaded to GitHub and merged regularly. One member will manage
 
 By contributing to this document, all members agree to follow the terms above.
 
-- Member 1: Mahathir Md Taief
-- Member 2: Gilbertofer Tanoto
-- Member 3: Nawshin Nawar Tanisha
-- Member 4: Muhammad Ahmad
-
-
+- Member 1: Mahathir Md Taief  
+- Member 2: Gilbertofer Tanoto  
+- Member 3: Nawshin Nawar Tanisha  
+- Member 4: Muhammad Ahmad  
