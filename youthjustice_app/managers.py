@@ -87,3 +87,30 @@ class CrimeDataManager(models.Manager):
             .order_by("-total")
         )
 
+
+# ENGAGEMENT DATA MANAGER
+
+# Used for imported Closing the Gap / engagement dataset records.
+
+class EngagementDataManager(models.Manager):
+    def by_year(self, year):
+        return self.filter(year=year)
+
+    def indigenous_only(self):
+        return self.filter(
+            indigenous_status="Aboriginal and Torres Strait Islander people"
+        )
+
+    def non_indigenous_only(self):
+        return self.filter(indigenous_status="Non-Indigenous people")
+
+    def by_sex(self, sex):
+        return self.filter(sex=sex)
+
+    def nt_trend(self):
+        return (
+            self.indigenous_only()
+            .filter(sex="All people")
+            .values("year", "value_nt")
+            .order_by("year")
+        )
