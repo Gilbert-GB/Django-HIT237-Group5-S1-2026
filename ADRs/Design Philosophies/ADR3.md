@@ -1,42 +1,51 @@
-## Architecture Decision Record (ADR) for:  
-### _Design Philosophy : Separate Logic from Presentation_
+# ADR: Separate logic from presentation
 
-## Introduction
+## Status
+Accepted
 
-### Proluge (Summary):
-I any web application/website development process, developers often try to separate backend logic from frontend display, using django`s design philosophy of **Separate Logic from Presentation** we can develop a clean and manageable code structure for our project, accepting it requires us to learn the Django templates.
+## Context
+The project must include a browsable public site and a management area for CRUD. It also needs to remain understandable for beginner-level Django development. Mixing HTML presentation with query logic or validation logic would make the code harder to maintain and harder to justify architecturally.
 
-### Discussion (Context):
-In web development, we need to make sure to avoid mixing business logic (Python Code) with presentation (HTML, CSS and Javascript) so that our code is not difficult to read and maintain.
+## Alternatives considered
 
-Django demands we:
-- Keep logic code inside separate **Python Files**
-- Keep presentation code inside templates
+### Option 1: Put most logic directly in templates or views
+**Pros**
+- Easy to start quickly
+- Fewer files at the beginning
 
-If we don`t have this approach and both logic and presentation is mixed then:
-- Code becomes messy and hard to read
-- Difficulty in debugging errors
-- Updating GUI can be tough for future versions of application
+**Cons**
+- Poor separation of concerns
+- Harder to test and maintain
+- Harder to explain in viva
 
-### Solutions (Decision):
-Using this design philosophy, we will:
-- Write all logic code inside models and views files
-- Use templates for only frontend display
-- Avoid writing any logic code inside HTML files
-- Pass data from views to templates using consistent variables
+### Option 2: Keep data rules in models/managers, input structure in forms, request handling in views, and display in templates
+**Pros**
+- Cleaner architecture
+- Better separation of concerns
+- Easier to maintain
+- Better alignment with rubric expectations
 
-For example:
-- Views file handles filtering programs
-- Template will only display the filtered results we got from our backend
+**Cons**
+- Requires more files
+- Requires clearer planning
 
-### Consequences (Results):
-Postive attributes:
-1. Achieve an organised project structure
-2. Easier to update GUI without affecting any backend logic code
-3. Easy to debug errors
+## Decision
+The project separates responsibilities across Django layers:
+- models handle data structure and validation
+- managers handle reusable query logic
+- forms handle structured user input
+- views coordinate requests and responses
+- templates handle display
 
-Negative attributes:
-1. Working with django templates requries learning its functionalities
-2. Extra files means managing multiple files simultaneously
----
-**This Data can be updated as the project development progresses.**
+## Rationale
+This structure is easier to understand and explain. It also supports object-oriented decomposition and keeps the user interface cleaner.
+
+## Code reference
+- `youthjustice_app/models.py`
+- `youthjustice_app/managers.py`
+- `youthjustice_app/forms.py`
+- `youthjustice_app/views.py`
+- `youthjustice_app/templates/youthjustice_app/base.html`
+
+## Consequences
+The application is more maintainable and better structured. The trade-off is that the team must manage several files instead of placing everything in one location.

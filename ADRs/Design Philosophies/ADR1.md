@@ -1,37 +1,46 @@
-## Architecture Decision Record (ADR) for:  
-### _Design Philosophy : Quick Development_
+# ADR: Use Django's Quick Development philosophy
 
-## Introduction
+## Status
+Accepted
 
-### Proluge (Summary):
-In the context of building a web app for NT youth diversion and support program, our team is facing time constraint to go with beginner-level experience in django projects, considering these circumstances we decided to go with Django`s philosopgy of **Quick Development**. This is help us achieve faster implementation for our project with fully-functional working features along with an appealing user interface design and effective customisation options.  
-### Discussion (Context):
-The features to be developed in this web application are:
-+ Searching programs
-+ Filtering by location, age and type of crime
-+ Allowing NGOs and organizations to manage listings
+## Context
+The project is a student-built Django web application that must demonstrate architectural thinking, object-oriented design, and supporting documentation within a limited assessment timeframe. The team needed an approach that allowed functional progress quickly without building low-level infrastructure manually.
 
-As new-to-django developer team, creating all these features from scratch will consume alot of time and increase difficulty overall. But according to this philosophy of django, the frameword already has alot of built-in features to fast track coding projects.
+## Alternatives considered
 
-Using pre-built features from django helps reduce workload and add common components of our website quick and easy, this allows our team to focus on core functionality of our web app and conserving time and effort from adding low-level features on our app.
+### Option 1: Build more functionality manually from scratch
+**Pros**
+- Greater low-level control
+- More custom implementation choices
 
-### Solutions (Decision):
-Making use of this philosophy, we will:
-- Use **Django`s Admin Panel** to manage all listings on the web app
-- Using **Django`s Built-in Authentication** feature for user/organisation login activity
-- Avoiding adding too advanced or unnecessary features in projects (by reviewing client desireables)
+**Cons**
+- Slower development
+- More repeated code
+- Higher risk of unfinished features within the deadline
 
-This simple method allows our team to build a functional web application timely, ensuring all the important features are included without getting stuck with complex implementation issues in development process.
+### Option 2: Use Django’s built-in structure and rapid development features
+**Pros**
+- Faster development
+- Clear project/app structure
+- Built-in support for models, forms, views, templates, admin, and routing
+- More time available for design decisions and documentation
 
-### Consequences (Results):
-Postive attributes:
-1. Quick and Easy development of application
-2. Less effort required, higher funcationality ensured
-3. Good learning curve for deveopment team, easy understanding and implementation
+**Cons**
+- Less low-level control
+- Requires understanding Django conventions
 
-Negative attributes:
-1. User interface might not be very complex
-2. Customization options can be limited
-3. Room for improvement in future versions
----
-**This Data can be updated as the project development progresses.**
+## Decision
+The project adopts Django’s Quick Development philosophy by using Django’s built-in project structure, model-driven forms, routing, templates, and admin support to scaffold the application quickly.
+
+## Rationale
+This approach was appropriate because the assessment emphasises design rationale and architecture rather than writing every part manually. Using Django’s framework support allowed the team to focus on modelling the youth justice problem, structuring CRUD functionality, and documenting design choices.
+
+## Code reference
+- `project_blog/urls.py`
+- `youthjustice_app/models.py`
+- `youthjustice_app/forms.py`
+- `youthjustice_app/views.py`
+- `youthjustice_app/admin.py`
+
+## Consequences
+The project was able to progress faster and maintain a clearer structure. The trade-off is that the team had to follow Django conventions closely, but this also improved consistency and maintainability.

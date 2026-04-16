@@ -1,36 +1,44 @@
-## Architecture Decision Record (ADR) for:  
-### _Design Philosophy : Less Code_
+# ADR: Use Django's Less Code philosophy
 
-## Introduction
+## Status
+Accepted
 
-### Proluge (Summary):
-Facing difficulty in managing large, complex code for our django-based web application, as a team of beginner-level developers we considered following django`s philosophy of writing **less code**. This will make development process much more quicker and efficient enhancing readability in our code, helping us achieve simplicity and less errors and bugs at the cost of reduced-control.
+## Context
+The application needs multiple pages, CRUD functionality, model validation, filtering, and dashboard data handling. Repeating logic across files would make the project harder to maintain and harder to explain in viva.
 
-### Discussion (Context):
-Writing a project with large amount of code can be overwhelming for our team and it can be hard to debug any issues considering hard navigation throughout the large and complex code structure. Django helps in this regard through its built-in tools and functions that will help our team to minimize our code while ensuring core functionalities.  
-Possible issues can be as follows:
-- Writing many raw SQL queries to manage database is tough than simply using Django ORM
-- Manually handling and coding forms is harder compared to usability of ModelForms
+## Alternatives considered
 
-We, as a team, can prioritize and focus on understanding and enhancing the functionality of our application rather than coding complex components simply through use of this design philosophy.
+### Option 1: Repeat logic in multiple views and templates
+**Pros**
+- Simple to start with
+- Easy to write small isolated features quickly
 
-### Solutions (Decision):
-We can reduce of code through:
-- Using **django ORM** rather than writing complex SQL queries
-- Use **ModelForms** from Django instead of making any custom html forms
-- Similarly, using built-in django features as requried and avoiding custom implementations as possible
+**Cons**
+- Duplicated code
+- Harder to maintain
+- Harder to explain as good architecture
 
-The application of this decision will help keep our app easily manageable and simple to understand.
+### Option 2: Reuse Django features such as ModelForms, custom managers, and class-based views
+**Pros**
+- Less repeated code
+- Cleaner separation of concerns
+- Easier to extend later
+- Better alignment with Django philosophy
 
-### Consequences (Results):
-Postive attributes:
-1. Clean and highly readable code, easy to understand
-2. Fast and easy maintenance, simple structure means easy to debug
-3. Fast learning curve for team as we navigate through the development process..
+**Cons**
+- Requires more understanding of Django abstractions
+- Slightly more structured design
 
-Negative attributes:
-1. Reduced controls means lesser customisation options
-2. Using built-in functions might cause developers to not fully grasp low-level implementation concepts at first
----
-**This Data can be updated as the project development progresses.**
+## Decision
+The project adopts Django’s Less Code philosophy by using `ModelForm` for program input handling, reusable manager methods for common queries, and generic class-based views for CRUD pages.
 
+## Rationale
+This choice reduced repeated logic across the project. It also made the system easier to maintain, because changes to model validation, query logic, or form structure could be made in one place instead of many.
+
+## Code reference
+- `youthjustice_app/forms.py`
+- `youthjustice_app/managers.py`
+- `youthjustice_app/views.py`
+
+## Consequences
+The codebase became cleaner and more reusable. The trade-off is that the team had to understand how Django forms, managers, and generic views work together.
