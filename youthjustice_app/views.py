@@ -1,6 +1,10 @@
 from django.db.models import Sum
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, render
+from django.urls import reverse_lazy
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+
+from .forms import ProgramForm
 from .models import Program, CrimeData
 
 
@@ -154,3 +158,54 @@ def dashboard_data(request):
             "category_breakdown": category_breakdown,
         }
     })
+    
+# MANAGEMENT / CRUD Section
+
+# Class-based views for managing programs (CRUD)
+# Uses reverse_lazy to redirect back to manage_programs after successful creation, update, or deletion
+
+class ProgramManageListView(ListView):
+    """
+    Shows all programs in one place for easy management and appealing UI
+    """
+    model = Program
+    template_name = "youthjustice_app/manage_programs.html"
+    context_object_name = "programs"
+    ordering = ["name"]
+
+    def get_queryset(self):
+        """
+        select_related('organisation') 
+        """
+        return Program.objects.select_related("organisation").all().order_by("name")
+
+
+class ProgramCreateView(CreateView):
+    """
+    Create a new program.
+    Uses ProgramForm automatically
+    """
+    model = Program
+    form_class = ProgramForm
+    template_name = "youthjustice_app/add_program.html"
+    success_url = reverse_lazy("manage_programs")
+
+
+class ProgramUpdateView(UpdateView):
+    """
+    Editing an existing program.
+    Reuses the same form as the create view.
+    """
+    model = Program
+    form_class = ProgramForm
+    template_name = "youthjustice_app/edit_program.html"
+    success_url = reverse_lazy("manage_programs")
+
+
+class ProgramDeleteView(DeleteView):
+    """
+    Delete an existing program
+    """
+    model = Program
+    template_name = "youthjustice_app/delete_program.html"
+    success_url = reverse_lazy("manage_programs")
