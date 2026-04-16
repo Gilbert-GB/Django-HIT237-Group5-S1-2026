@@ -49,3 +49,41 @@ class ProgramManager(models.Manager):
         Return available programs suitable for a given age.
         """
         return self.available().filter(age_min__lte=age, age_max__gte=age)
+
+
+
+# CRIME DATA MANAGER
+
+# This manager is used by imported crime dataset records.
+
+class CrimeDataManager(models.Manager):
+    def by_region(self, region):
+        return self.filter(region=region)
+
+    def by_year(self, year):
+        return self.filter(year=year)
+
+    def by_offence(self, category):
+        return self.filter(offence_category=category)
+
+    def total_by_region(self):
+        return (
+            self.values("region")
+            .annotate(total=Sum("count"))
+            .order_by("-total")
+        )
+
+    def total_by_year(self):
+        return (
+            self.values("year")
+            .annotate(total=Sum("count"))
+            .order_by("year")
+        )
+
+    def total_by_category(self):
+        return (
+            self.values("offence_category")
+            .annotate(total=Sum("count"))
+            .order_by("-total")
+        )
+
