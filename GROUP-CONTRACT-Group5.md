@@ -87,8 +87,12 @@ All team members have reviewed CDU’s academic integrity policies. AI tools may
   - Documentation writing (reports, ADRs)
 
 - **Nawshin:**
-  - Final review and submission
-  - Quality checking (formatting, consistency, completeness)
+  - **Django model development** (Program and Organisation structure)
+  - **Frontend implementation** (home, programs, about, and detail pages)
+  - **Template design and UI improvements** (layout, styling, consistency)
+  - **Integration of backend data with frontend templates**
+  - **Final review**
+  - **Quality checking** (formatting, consistency, completeness)
 
 ---
 
