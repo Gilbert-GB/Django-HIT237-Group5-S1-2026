@@ -1,0 +1,156 @@
+{% extends "youthjustice_app/base.html" %}
+
+{% block title %}Dashboard | Youth Justice NT{% endblock %}
+
+{% block extra_head %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+    .filter-bar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 22px;
+    }
+
+    .filter-bar select {
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        background: #fff;
+    }
+
+    .grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 20px;
+    }
+
+    .card {
+        background: linear-gradient(180deg, #ffffff, #f9fcff);
+        padding: 20px;
+        border-radius: 14px;
+        box-shadow: 0 10px 24px rgba(70, 130, 180, 0.12);
+        border: 1px solid rgba(70, 130, 180, 0.12);
+        margin-bottom: 20px;
+    }
+
+    .kpi {
+        font-size: 24px;
+        font-weight: bold;
+        margin-top: 8px;
+        color: #1c3553;
+    }
+
+    @media (max-width: 900px) {
+        .grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="filter-bar">
+    <select id="regionFilter">
+        <option value="">All Regions</option>
+        <option value="Darwin">Darwin</option>
+        <option value="Alice Springs">Alice Springs</option>
+        <option value="Katherine">Katherine</option>
+    </select>
+
+    <select id="yearFilter">
+        <option value="">All Years</option>
+        <option value="2023">2023</option>
+        <option value="2024">2024</option>
+        <option value="2025">2025</option>
+    </select>
+</div>
+
+<div class="grid">
+    <div class="card">
+        Total Crimes
+        <div class="kpi" id="total-crimes">-</div>
+    </div>
+
+    <div class="card">
+        Top Region
+        <div class="kpi" id="top-region">-</div>
+    </div>
+
+    <div class="card">
+        Top Crime
+        <div class="kpi" id="top-crime">-</div>
+    </div>
+</div>
+
+<div class="card">
+    <h3>Monthly Trend</h3>
+    <canvas id="lineChart"></canvas>
+</div>
+
+<div class="card">
+    <h3>Top Regions</h3>
+    <canvas id="barChart"></canvas>
+</div>
+
+<div class="card">
+    <h3>Crime Categories</h3>
+    <canvas id="pieChart"></canvas>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+let lineChart, barChart, pieChart;
+
+function loadDashboard() {
+    const region = document.getElementById("regionFilter").value;
+    const year = document.getElementById("yearFilter").value;
+
+    let url = "/api/dashboard/?";
+
+    if (region) url += "region=" + region + "&";
+    if (year) url += "year=" + year;
+
+    fetch(url)
+    .then(res => res.json())
+    .then(data => {
+        document.getElementById("total-crimes").innerText = data.kpis.total_crimes;
+        document.getElementById("top-region").innerText = data.kpis.top_region?.region || "-";
+        document.getElementById("top-crime").innerText = data.kpis.top_crime?.offence_type || "-";
+
+        const labels = data.charts.monthly_trend.map(x => `${x.year}-${x.month}`);
+        const values = data.charts.monthly_trend.map(x => x.total_crimes);
+
+        if (lineChart) lineChart.destroy();
+        lineChart = new Chart(document.getElementById("lineChart"), {
+            type: "line",
+            data: { labels, datasets: [{ data: values }] }
+        });
+
+        const rLabels = data.charts.top_regions.map(x => x.region);
+        const rValues = data.charts.top_regions.map(x => x.total);
+
+        if (barChart) barChart.destroy();
+        barChart = new Chart(document.getElementById("barChart"), {
+            type: "bar",
+            data: { labels: rLabels, datasets: [{ data: rValues }] }
+        });
+
+        const pLabels = data.charts.category_breakdown.map(x => x.offence_category);
+        const pValues = data.charts.category_breakdown.map(x => x.total);
+
+        if (pieChart) pieChart.destroy();
+        pieChart = new Chart(document.getElementById("pieChart"), {
+            type: "pie",
+            data: { labels: pLabels, datasets: [{ data: pValues }] }
+        });
+    });
+}
+
+document.getElementById("regionFilter").addEventListener("change", loadDashboard);
+document.getElementById("yearFilter").addEventListener("change", loadDashboard);
+
+loadDashboard();
+</script>
+{% endblock %}

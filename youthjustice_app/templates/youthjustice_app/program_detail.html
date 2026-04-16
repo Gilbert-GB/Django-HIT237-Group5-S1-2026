@@ -1,0 +1,95 @@
+{% extends "youthjustice_app/base.html" %}
+
+{% block title %}{{ program.name }} | Youth Justice NT{% endblock %}
+
+{% block extra_head %}
+<style>
+    .back-link {
+        display: inline-block;
+        margin-bottom: 18px;
+        text-decoration: none;
+        color: #2f6fa3;
+        font-weight: 600;
+    }
+
+    .detail-card {
+        background: linear-gradient(180deg, #ffffff, #f9fcff);
+        padding: 28px;
+        border-radius: 18px;
+        box-shadow: 0 10px 24px rgba(70, 130, 180, 0.12);
+        border: 1px solid rgba(70, 130, 180, 0.12);
+    }
+
+    .detail-card h2 {
+        margin-top: 0;
+        margin-bottom: 12px;
+        color: #1c3553;
+        font-size: 28px;
+    }
+
+    .detail-card p {
+        color: #334;
+        line-height: 1.8;
+        font-size: 15px;
+        margin: 10px 0;
+    }
+
+    .detail-card a.website-link {
+        display: inline-block;
+        margin-top: 16px;
+        text-decoration: none;
+        color: #2f6fa3;
+        font-weight: 600;
+    }
+
+    .detail-card a.website-link:hover {
+        color: #1c3553;
+    }
+
+    .status-badge {
+        display: inline-block;
+        padding: 7px 14px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 700;
+        margin-bottom: 14px;
+        letter-spacing: 0.3px;
+    }
+
+    .available {
+        background-color: #e6f7ec;
+        color: #1f7a36;
+        border: 1px solid #cdeed8;
+    }
+
+    .unavailable {
+        background-color: #fdeced;
+        color: #a12634;
+        border: 1px solid #f7cfd4;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<a href="{% url 'programs' %}" class="back-link">&larr; Back to Programs</a>
+
+<div class="detail-card">
+    {% if program.is_available %}
+        <span class="status-badge available">Available</span>
+    {% else %}
+        <span class="status-badge unavailable">Not Available</span>
+    {% endif %}
+
+    <h2>{{ program.name }}</h2>
+
+    <p><strong>Organisation:</strong> {{ program.organisation.name }}</p>
+    <p><strong>Region:</strong> {{ program.get_region_display }}</p>
+    <p><strong>Category:</strong> {{ program.get_category_display }}</p>
+    <p><strong>Age Range:</strong> {{ program.age_min }} - {{ program.age_max }}</p>
+    <p><strong>Description:</strong> {{ program.short_description }}</p>
+
+    {% if program.website %}
+        <a href="{{ program.website }}" target="_blank" class="website-link">Visit Official Website</a>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,52 @@
+{% extends "youthjustice_app/base.html" %}
+
+{% block title %}About | Youth Justice NT{% endblock %}
+
+{% block extra_head %}
+<style>
+    .about-card {
+        background: linear-gradient(180deg, #ffffff, #f9fcff);
+        padding: 28px;
+        border-radius: 18px;
+        box-shadow: 0 10px 24px rgba(70, 130, 180, 0.12);
+        border: 1px solid rgba(70, 130, 180, 0.12);
+    }
+
+    .about-card h2 {
+        margin-top: 0;
+        color: #1c3553;
+        font-size: 28px;
+    }
+
+    .about-card p {
+        color: #334;
+        line-height: 1.8;
+        font-size: 15px;
+        margin-bottom: 18px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="about-card">
+    <h2>About Youth Justice NT</h2>
+
+    <p>
+        Youth Justice NT is a Django-based web application created to make youth diversion and support
+        programs across the Northern Territory easier to find and understand. Instead of searching through
+        different websites separately, users can access important program details in one place.
+    </p>
+
+    <p>
+        This project focuses on alternatives to detention by highlighting support services such as diversion,
+        mentoring, throughcare, education, and community-based programs. The aim is to make these services
+        more visible and accessible for users.
+    </p>
+
+    <p>
+        The system includes useful features such as searching, filtering by region and category, sorting,
+        featured programs, availability status, and detailed program pages. These features help users browse
+        programs more clearly and quickly.
+    </p>
+</div>
+{% endblock %}

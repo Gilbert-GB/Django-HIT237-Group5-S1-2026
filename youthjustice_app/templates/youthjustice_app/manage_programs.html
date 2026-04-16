@@ -1,0 +1,114 @@
+{% extends "youthjustice_app/base.html" %}
+
+{% block title %}Manage Programs | Youth Justice NT{% endblock %}
+
+{% block extra_head %}
+<style>
+    .manage-card {
+        background: linear-gradient(180deg, #ffffff, #f9fcff);
+        padding: 24px;
+        border-radius: 18px;
+        box-shadow: 0 10px 24px rgba(70, 130, 180, 0.12);
+        border: 1px solid rgba(70, 130, 180, 0.12);
+    }
+
+    .manage-card h1 {
+        margin-top: 0;
+        color: #1c3553;
+    }
+
+    .action-link {
+        display: inline-block;
+        margin: 12px 0 18px;
+        padding: 10px 14px;
+        border-radius: 8px;
+        background: #2f6fa3;
+        color: #fff;
+        text-decoration: none;
+        font-weight: 700;
+    }
+
+    .action-link:hover {
+        background: #1f5c8e;
+    }
+
+    .program-table {
+        width: 100%;
+        border-collapse: collapse;
+        background: #fff;
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+    .program-table th,
+    .program-table td {
+        padding: 12px;
+        border-bottom: 1px solid #e5edf6;
+        text-align: left;
+        vertical-align: top;
+        font-size: 14px;
+    }
+
+    .program-table th {
+        background: #eef6fc;
+        color: #1c3553;
+    }
+
+    .inline-actions a {
+        color: #2f6fa3;
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+    .inline-actions a:hover {
+        text-decoration: underline;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="manage-card">
+    <h1>Program Management</h1>
+
+    <p>
+        This page is used to manage program records separately from the public browsing pages.
+    </p>
+
+    <a class="action-link" href="{% url 'add_program' %}">Add New Program</a>
+
+    <table class="program-table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Organisation</th>
+                <th>Region</th>
+                <th>Category</th>
+                <th>Available</th>
+                <th>Featured</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for program in programs %}
+            <tr>
+                <td>{{ program.name }}</td>
+                <td>{{ program.organisation.name }}</td>
+                <td>{{ program.get_region_display }}</td>
+                <td>{{ program.get_category_display }}</td>
+                <td>{{ program.is_available|yesno:"Yes,No" }}</td>
+                <td>{{ program.is_featured|yesno:"Yes,No" }}</td>
+                <td class="inline-actions">
+                    <a href="{% url 'program_detail' program.pk %}">View</a> |
+                    <a href="{% url 'edit_program' program.pk %}">Edit</a> |
+                    <a href="{% url 'delete_program' program.pk %}">Delete</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="7">No programs found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
