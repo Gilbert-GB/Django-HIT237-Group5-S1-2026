@@ -3,6 +3,7 @@ from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+from django.core.paginator import Paginator
 
 from .forms import ProgramForm
 from .models import Program, CrimeData
@@ -35,7 +36,7 @@ def home(request):
 
 def programs(request):
     """
-    Public program list page.
+    Public program list page with search, filter, sort, and pagination.
     """
 
     search_query = request.GET.get("search", "").strip()
@@ -60,8 +61,14 @@ def programs(request):
     elif selected_sort == "name_desc":
         program_list = program_list.order_by("-name")
 
+    # Pagination — 9 programs per page (3x3 grid)
+    paginator = Paginator(program_list, 9)
+    page_number = request.GET.get("page")
+    page_obj = paginator.get_page(page_number)
+
     context = {
-        "programs": program_list,
+        "programs": page_obj,
+        "page_obj": page_obj,
         "search_query": search_query,
         "selected_region": selected_region,
         "selected_category": selected_category,
@@ -158,7 +165,7 @@ def dashboard_data(request):
             "category_breakdown": category_breakdown,
         }
     })
-    
+
 # MANAGEMENT / CRUD Section
 
 # Class-based views for managing programs (CRUD)
@@ -175,7 +182,7 @@ class ProgramManageListView(ListView):
 
     def get_queryset(self):
         """
-        select_related('organisation') 
+        select_related('organisation')
         """
         return Program.objects.select_related("organisation").all().order_by("name")
 

@@ -178,6 +178,43 @@
         box-shadow: 0 8px 18px rgba(70, 130, 180, 0.08);
         border: 1px solid rgba(70, 130, 180, 0.10);
     }
+
+    .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            margin-top: 35px;
+            flex-wrap: wrap;
+        }
+
+        .pagination a {
+            display: inline-block;
+            padding: 10px 16px;
+            background: white;
+            color: #2f6fa3;
+            text-decoration: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(70, 130, 180, 0.10);
+            border: 1px solid rgba(70, 130, 180, 0.12);
+            font-weight: 600;
+            font-size: 14px;
+            transition: background-color 0.2s ease;
+        }
+
+        .pagination a:hover {
+            background-color: #eef7fd;
+        }
+
+        .pagination .current-page {
+            display: inline-block;
+            padding: 10px 16px;
+            background-color: #2f6fa3;
+            color: white;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 14px;
+        }
 </style>
 {% endblock %}
 
@@ -262,5 +299,27 @@
             No programs found
         </div>
     {% endfor %}
+    <!-- Pagination -->
+        {% if page_obj.has_other_pages %}
+        <div class="pagination">
+            {% if page_obj.has_previous %}
+                <a href="?page=1{% if search_query %}&search={{ search_query }}{% endif %}{% if selected_region %}&region={{ selected_region }}{% endif %}{% if selected_category %}&category={{ selected_category }}{% endif %}{% if selected_sort %}&sort={{ selected_sort }}{% endif %}">&laquo; First</a>
+                <a href="?page={{ page_obj.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if selected_region %}&region={{ selected_region }}{% endif %}{% if selected_category %}&category={{ selected_category }}{% endif %}{% if selected_sort %}&sort={{ selected_sort }}{% endif %}">&lsaquo; Prev</a>
+            {% endif %}
+
+            {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %}
+                    <span class="current-page">{{ num }}</span>
+                {% elif num > page_obj.number|add:"-3" and num < page_obj.number|add:"3" %}
+                    <a href="?page={{ num }}{% if search_query %}&search={{ search_query }}{% endif %}{% if selected_region %}&region={{ selected_region }}{% endif %}{% if selected_category %}&category={{ selected_category }}{% endif %}{% if selected_sort %}&sort={{ selected_sort }}{% endif %}">{{ num }}</a>
+                {% endif %}
+            {% endfor %}
+
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if selected_region %}&region={{ selected_region }}{% endif %}{% if selected_category %}&category={{ selected_category }}{% endif %}{% if selected_sort %}&sort={{ selected_sort }}{% endif %}">Next &rsaquo;</a>
+                <a href="?page={{ page_obj.paginator.num_pages }}{% if search_query %}&search={{ search_query }}{% endif %}{% if selected_region %}&region={{ selected_region }}{% endif %}{% if selected_category %}&category={{ selected_category }}{% endif %}{% if selected_sort %}&sort={{ selected_sort }}{% endif %}">Last &raquo;</a>
+            {% endif %}
+        </div>
+        {% endif %}
 </div>
 {% endblock %}
