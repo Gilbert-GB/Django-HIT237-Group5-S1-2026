@@ -1,0 +1,216 @@
+{% extends "youthjustice_app/base.html" %}
+
+{% block title %}Engagement Data | Youth Justice NT{% endblock %}
+
+{% block content %}
+
+<div class="container">
+
+    <h2 style="color: #1e3a5f; margin-bottom: 5px;">Closing the Gap — Youth Engagement</h2>
+    <p style="color: #4a5a6a; margin-bottom: 25px;">
+        Engagement rates for young people (15–24) in employment, education, or training — NT vs National.
+        Source: Productivity Commission / ABS Census.
+    </p>
+
+    <!-- Filters -->
+    <div style="margin-bottom: 25px;">
+        <select id="yearFilter" style="padding: 10px; border: 1px solid #ccc; border-radius: 8px; margin-right: 8px;">
+            <option value="">All Years</option>
+        </select>
+
+        <select id="sexFilter" style="padding: 10px; border: 1px solid #ccc; border-radius: 8px; margin-right: 8px;">
+            <option value="">All</option>
+            <option value="Males">Males</option>
+            <option value="Females">Females</option>
+        </select>
+
+        <select id="statusFilter" style="padding: 10px; border: 1px solid #ccc; border-radius: 8px;">
+            <option value="">All Groups</option>
+            <option value="indigenous">Indigenous</option>
+            <option value="non_indigenous">Non-Indigenous</option>
+        </select>
+    </div>
+
+    <!-- KPI Cards -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px;">
+        <div style="background: linear-gradient(180deg, #ffffff, #f9fcff); padding: 22px; border-radius: 18px; box-shadow: 0 10px 24px rgba(70,130,180,0.12); border: 1px solid rgba(70,130,180,0.12); text-align: center;">
+            <div style="font-size: 14px; color: #4a5a6a; font-weight: 600;">Latest Year</div>
+            <div id="kpi-year" style="font-size: 30px; font-weight: bold; color: #2f6fa3;">-</div>
+        </div>
+        <div style="background: linear-gradient(180deg, #ffffff, #f9fcff); padding: 22px; border-radius: 18px; box-shadow: 0 10px 24px rgba(70,130,180,0.12); border: 1px solid rgba(70,130,180,0.12); text-align: center;">
+            <div style="font-size: 14px; color: #4a5a6a; font-weight: 600;">Indigenous NT Rate</div>
+            <div id="kpi-indigenous" style="font-size: 30px; font-weight: bold; color: #2f6fa3;">-</div>
+        </div>
+        <div style="background: linear-gradient(180deg, #ffffff, #f9fcff); padding: 22px; border-radius: 18px; box-shadow: 0 10px 24px rgba(70,130,180,0.12); border: 1px solid rgba(70,130,180,0.12); text-align: center;">
+            <div style="font-size: 14px; color: #4a5a6a; font-weight: 600;">Non-Indigenous NT Rate</div>
+            <div id="kpi-nonindigenous" style="font-size: 30px; font-weight: bold; color: #2f6fa3;">-</div>
+        </div>
+        <div style="background: linear-gradient(180deg, #ffffff, #f9fcff); padding: 22px; border-radius: 18px; box-shadow: 0 10px 24px rgba(70,130,180,0.12); border: 1px solid rgba(70,130,180,0.12); text-align: center;">
+            <div style="font-size: 14px; color: #4a5a6a; font-weight: 600;">Gap</div>
+            <div id="kpi-gap" style="font-size: 30px; font-weight: bold; color: #c0392b;">-</div>
+        </div>
+    </div>
+
+    <!-- Charts -->
+    <div style="display: grid; grid-template-columns: 1fr; gap: 25px;">
+
+        <div style="background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.06);">
+            <h3 style="color: #1e3a5f; margin-top: 0;">NT vs National Engagement Rate Over Time</h3>
+            <canvas id="trendChart"></canvas>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 25px;">
+            <div style="background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.06);">
+                <h3 style="color: #1e3a5f; margin-top: 0;">By Sex</h3>
+                <canvas id="sexChart"></canvas>
+            </div>
+            <div style="background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.06);">
+                <h3 style="color: #1e3a5f; margin-top: 0;">By Indigenous Status</h3>
+                <canvas id="statusChart"></canvas>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+let trendChart, sexChart, statusChart;
+
+function loadEngagement() {
+    const year = document.getElementById("yearFilter").value;
+    const sex = document.getElementById("sexFilter").value;
+    const status = document.getElementById("statusFilter").value;
+
+    let url = "/api/engagement/?";
+    if (year) url += "year=" + year + "&";
+    if (sex) url += "sex=" + sex + "&";
+    if (status) url += "status=" + status;
+
+    fetch(url)
+    .then(res => res.json())
+    .then(data => {
+
+        // KPIs
+        document.getElementById("kpi-year").innerText = data.kpis.latest_year || "-";
+        document.getElementById("kpi-indigenous").innerText = data.kpis.indigenous_nt != null ? data.kpis.indigenous_nt.toFixed(1) + "%" : "-";
+        document.getElementById("kpi-nonindigenous").innerText = data.kpis.non_indigenous_nt != null ? data.kpis.non_indigenous_nt.toFixed(1) + "%" : "-";
+
+        const gap = data.kpis.gap;
+        if (gap != null) {
+            const sign = gap >= 0 ? "+" : "";
+            document.getElementById("kpi-gap").innerText = sign + gap.toFixed(1) + "%";
+            document.getElementById("kpi-gap").style.color = gap < 0 ? "#c0392b" : "#27ae60";
+        } else {
+            document.getElementById("kpi-gap").innerText = "-";
+        }
+
+        // Populate year filter if empty
+        const yearSelect = document.getElementById("yearFilter");
+        if (yearSelect.options.length <= 1 && data.available_years) {
+            data.available_years.forEach(y => {
+                const opt = document.createElement("option");
+                opt.value = y;
+                opt.text = y;
+                yearSelect.appendChild(opt);
+            });
+        }
+
+        // TREND CHART — line chart with NT vs National
+        const trendLabels = data.charts.nt_trend.map(x => x.year);
+        const ntValues = data.charts.nt_trend.map(x => x.avg_nt ? x.avg_nt.toFixed(1) : null);
+        const natValues = data.charts.nt_trend.map(x => x.avg_national ? x.avg_national.toFixed(1) : null);
+
+        if (trendChart) trendChart.destroy();
+        trendChart = new Chart(document.getElementById("trendChart"), {
+            type: "line",
+            data: {
+                labels: trendLabels,
+                datasets: [
+                    {
+                        label: "NT",
+                        data: ntValues,
+                        borderColor: "#2f6fa3",
+                        backgroundColor: "rgba(47,111,163,0.1)",
+                        fill: true,
+                        tension: 0.3,
+                    },
+                    {
+                        label: "National",
+                        data: natValues,
+                        borderColor: "#e67e22",
+                        backgroundColor: "rgba(230,126,34,0.1)",
+                        fill: true,
+                        tension: 0.3,
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: { beginAtZero: false, title: { display: true, text: "Engagement %" } }
+                }
+            }
+        });
+
+        // SEX CHART — grouped bar
+        const sexLabels = data.charts.by_sex.map(x => x.sex);
+        const sexNT = data.charts.by_sex.map(x => x.avg_nt ? x.avg_nt.toFixed(1) : 0);
+        const sexNat = data.charts.by_sex.map(x => x.avg_national ? x.avg_national.toFixed(1) : 0);
+
+        if (sexChart) sexChart.destroy();
+        sexChart = new Chart(document.getElementById("sexChart"), {
+            type: "bar",
+            data: {
+                labels: sexLabels,
+                datasets: [
+                    { label: "NT", data: sexNT, backgroundColor: "#2f6fa3" },
+                    { label: "National", data: sexNat, backgroundColor: "#e67e22" }
+                ]
+            },
+            options: {
+                responsive: true,
+                scales: { y: { beginAtZero: true, title: { display: true, text: "%" } } }
+            }
+        });
+
+        // STATUS CHART — horizontal bar
+        const statLabels = data.charts.by_status.map(x => {
+            if (x.indigenous_status.includes("Aboriginal")) return "Indigenous";
+            if (x.indigenous_status.includes("Non-Indigenous")) return "Non-Indigenous";
+            return "Unknown";
+        });
+        const statNT = data.charts.by_status.map(x => x.avg_nt ? x.avg_nt.toFixed(1) : 0);
+        const statNat = data.charts.by_status.map(x => x.avg_national ? x.avg_national.toFixed(1) : 0);
+
+        if (statusChart) statusChart.destroy();
+        statusChart = new Chart(document.getElementById("statusChart"), {
+            type: "bar",
+            data: {
+                labels: statLabels,
+                datasets: [
+                    { label: "NT", data: statNT, backgroundColor: "#2f6fa3" },
+                    { label: "National", data: statNat, backgroundColor: "#e67e22" }
+                ]
+            },
+            options: {
+                indexAxis: "y",
+                responsive: true,
+                scales: { x: { beginAtZero: true, title: { display: true, text: "%" } } }
+            }
+        });
+    });
+}
+
+// Event listeners
+document.getElementById("yearFilter").addEventListener("change", loadEngagement);
+document.getElementById("sexFilter").addEventListener("change", loadEngagement);
+document.getElementById("statusFilter").addEventListener("change", loadEngagement);
+
+// Init
+loadEngagement();
+</script>
+
+{% endblock %}

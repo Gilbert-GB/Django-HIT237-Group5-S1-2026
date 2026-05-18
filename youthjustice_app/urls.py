@@ -17,4 +17,8 @@ urlpatterns = [
     path("manage/programs/add/", views.ProgramCreateView.as_view(), name="add_program"),
     path("manage/programs/<int:pk>/edit/", views.ProgramUpdateView.as_view(), name="edit_program"),
     path("manage/programs/<int:pk>/delete/", views.ProgramDeleteView.as_view(), name="delete_program"),
+
+    # Engagement dashboard
+    path("engagement/", views.engagement_page, name="engagement"),
+    path("api/engagement/", views.engagement_data, name="engagement_data"),
 ]

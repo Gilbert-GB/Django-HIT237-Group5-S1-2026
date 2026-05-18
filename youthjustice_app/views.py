@@ -1,12 +1,14 @@
 from django.db.models import Sum
+from django.db import models
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.core.paginator import Paginator
 
+
 from .forms import ProgramForm
-from .models import Program, CrimeData
+from .models import Program, CrimeData, EngagementData
 
 
 # PUBLIC PAGES
@@ -166,6 +168,99 @@ def dashboard_data(request):
         }
     })
 
+
+def engagement_data(request):
+    """
+    JSON API endpoint for engagement dashboard.
+    Returns Closing the Gap data filtered by year, sex, indigenous status.
+    """
+
+    selected_year = request.GET.get("year")
+    selected_sex = request.GET.get("sex")
+    selected_status = request.GET.get("status")
+
+    data = EngagementData.objects.all()
+
+    if selected_year:
+        data = data.filter(year=int(selected_year))
+
+    if selected_sex:
+        data = data.filter(sex=selected_sex)
+
+    if selected_status == "indigenous":
+        data = EngagementData.objects.indigenous_only()
+        if selected_year:
+            data = data.filter(year=int(selected_year))
+        if selected_sex:
+            data = data.filter(sex=selected_sex)
+    elif selected_status == "non_indigenous":
+        data = EngagementData.objects.non_indigenous_only()
+        if selected_year:
+            data = data.filter(year=int(selected_year))
+        if selected_sex:
+            data = data.filter(sex=selected_sex)
+
+    # NT trend over years (for line chart)
+    nt_trend = list(
+        data.values("year")
+        .annotate(avg_nt=models.Avg("value_nt"), avg_national=models.Avg("value_national"))
+        .order_by("year")
+    )
+
+    # Breakdown by sex (for bar chart)
+    by_sex = list(
+        data.exclude(sex="All people")
+        .values("sex")
+        .annotate(avg_nt=models.Avg("value_nt"), avg_national=models.Avg("value_national"))
+    )
+
+    # Breakdown by indigenous status (for comparison chart)
+    by_status = list(
+        data.values("indigenous_status")
+        .annotate(avg_nt=models.Avg("value_nt"), avg_national=models.Avg("value_national"))
+    )
+
+    # Available years for filter dropdown
+    available_years = sorted(
+        data.values_list("year", flat=True).distinct()
+    )
+
+    # KPIs
+    latest_year = data.order_by("-year").values_list("year", flat=True).first()
+    latest_data = data.filter(year=latest_year) if latest_year else data.none()
+
+    indigenous_nt = latest_data.filter(
+        indigenous_status="Aboriginal and Torres Strait Islander people",
+        sex="All people"
+    ).values_list("value_nt", flat=True).first()
+
+    non_indigenous_nt = latest_data.filter(
+        indigenous_status="Non-Indigenous people",
+        sex="All people"
+    ).values_list("value_nt", flat=True).first()
+
+    gap_value = None
+    if indigenous_nt is not None and non_indigenous_nt is not None:
+        gap_value = round(indigenous_nt - non_indigenous_nt, 1)
+
+    return JsonResponse({
+        "kpis": {
+            "latest_year": latest_year,
+            "indigenous_nt": indigenous_nt,
+            "non_indigenous_nt": non_indigenous_nt,
+            "gap": gap_value,
+        },
+        "charts": {
+            "nt_trend": nt_trend,
+            "by_sex": by_sex,
+            "by_status": by_status,
+        },
+        "available_years": available_years,
+    })
+
+
+def engagement_page(request):
+    return render(request, "youthjustice_app/engagement.html")
 # MANAGEMENT / CRUD Section
 
 # Class-based views for managing programs (CRUD)
