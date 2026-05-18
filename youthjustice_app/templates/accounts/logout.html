@@ -1,0 +1,67 @@
+{% extends "youthjustice_app/base.html" %}
+
+{% block title %}Logged Out | Youth Justice NT{% endblock %}
+
+{% block extra_head %}
+<style>
+    .logout-container {
+        max-width: 500px;
+        margin: 80px auto;
+    }
+
+    .logout-card {
+        background: linear-gradient(180deg, #ffffff, #f9fcff);
+        padding: 40px;
+        border-radius: 20px;
+        box-shadow: 0 12px 28px rgba(70, 130, 180, 0.12);
+        border: 1px solid rgba(70, 130, 180, 0.12);
+        text-align: center;
+    }
+
+    .logout-card h2 {
+        color: #1c3553;
+        margin-bottom: 15px;
+    }
+
+    .logout-card p {
+        color: #4a5a6a;
+        line-height: 1.7;
+    }
+
+    .logout-button {
+        display: inline-block;
+        margin-top: 20px;
+        padding: 12px 22px;
+        background-color: #2f6fa3;
+        color: white;
+        text-decoration: none;
+        border-radius: 10px;
+        font-weight: 600;
+    }
+
+    .logout-button:hover {
+        background-color: #1f5c8e;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="logout-container">
+
+    <div class="logout-card">
+
+        <h2>You Have Been Logged Out</h2>
+
+        <p>
+            Thank you for visiting Youth Justice NT.
+            You can login again anytime to continue exploring programs and services.
+        </p>
+
+        <a href="{% url 'login' %}" class="logout-button">
+            Login Again
+        </a>
+
+    </div>
+
+</div>
+{% endblock %}

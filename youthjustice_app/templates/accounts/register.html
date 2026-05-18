@@ -1,0 +1,101 @@
+{% extends "youthjustice_app/base.html" %}
+
+{% block title %}Register{% endblock %}
+
+{% block extra_head %}
+<style>
+
+.auth-box {
+    max-width: 420px;
+    margin: 60px auto;
+    padding: 25px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+}
+
+.auth-box h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.auth-box form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* make Django form look clean */
+.auth-box p {
+    margin: 0;
+}
+
+.auth-box label {
+    font-size: 13px;
+    font-weight: 600;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.auth-box input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+}
+
+.auth-box input:focus {
+    outline: none;
+    border-color: #2f6fa3;
+}
+
+.auth-box button {
+    padding: 10px;
+    background: #2f6fa3;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.auth-box button:hover {
+    background: #1f5c8e;
+}
+
+.auth-link {
+    text-align: center;
+    margin-top: 10px;
+    font-size: 14px;
+}
+
+.errorlist {
+    color: red;
+    font-size: 12px;
+    margin: 0;
+    padding-left: 15px;
+}
+
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="auth-box">
+
+    <h2>Register</h2>
+
+    <form method="post">
+        {% csrf_token %}
+
+        {{ form.as_p }}
+
+        <button type="submit">Register</button>
+    </form>
+
+    <div class="auth-link">
+        Already have an account? <a href="{% url 'login' %}">Login</a>
+    </div>
+
+</div>
+
+{% endblock %}

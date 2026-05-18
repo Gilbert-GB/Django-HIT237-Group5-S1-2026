@@ -42,19 +42,42 @@
 
         .navbar {
             margin-top: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 18px;
+            padding: 10px 15px;
         }
 
+        /* links */
         .navbar a {
-            display: inline-block;
-            margin: 0 15px;
             color: white;
             text-decoration: none;
-            font-weight: bold;
-            font-size: 15px;
+            font-weight: 600;
+            font-size: 14px;
+            padding: 6px 10px;
+            border-radius: 6px;
+            transition: 0.2s;
         }
 
         .navbar a:hover {
-            text-decoration: underline;
+            background: rgba(255,255,255,0.15);
+        }
+
+        /* user section */
+        .nav-user {
+            margin-left: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+        }
+
+        .nav-user a {
+            background: rgba(255,255,255,0.15);
+            padding: 6px 10px;
+            border-radius: 6px;
         }
 
         .container {
@@ -68,14 +91,28 @@
     <header>
         <h1>Youth Justice NT</h1>
         <p>Supporting youth diversion and community programs across the Northern Territory</p>
-        <div class="navbar">
-            <a href="{% url 'home' %}">Home</a>
-            <a href="{% url 'dashboard' %}">Dashboard</a>
-            <a href="{% url 'programs' %}">Programs</a>
-            <a href="{% url 'about' %}">About</a>
-            <a href="{% url 'manage_programs' %}">Manage Programs</a>
-            <a href="/admin/">Admin</a>
+       <div class="navbar">
+
+    <a href="{% url 'home' %}">Home</a>
+    <a href="{% url 'dashboard' %}">Dashboard</a>
+    <a href="{% url 'programs' %}">Programs</a>
+    <a href="{% url 'about' %}">About</a>
+    <a href="{% url 'manage_programs' %}">Manage</a>
+    <a href="/admin/">Admin</a>
+
+    {% if user.is_authenticated %}
+        <div class="nav-user">
+            <span>Hi, {{ user.username }}</span>
+            <a href="{% url 'logout' %}">Logout</a>
         </div>
+    {% else %}
+        <div class="nav-user">
+            <a href="{% url 'login' %}">Login</a>
+            <a href="{% url 'register' %}">Register</a>
+        </div>
+    {% endif %}
+
+</div>
     </header>
 
     <div class="container">
