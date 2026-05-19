@@ -5,6 +5,7 @@ from django.shortcuts import get_object_or_404, render
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.core.paginator import Paginator
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 from .forms import ProgramForm
@@ -275,7 +276,7 @@ def engagement_page(request):
 # Class-based views for managing programs (CRUD)
 # Uses reverse_lazy to redirect back to manage_programs after successful creation, update, or deletion
 
-class ProgramManageListView(ListView):
+class ProgramManageListView(LoginRequiredMixin, ListView):
     """
     Shows all programs in one place for easy management and appealing UI
     """
@@ -291,7 +292,7 @@ class ProgramManageListView(ListView):
         return Program.objects.select_related("organisation").all().order_by("name")
 
 
-class ProgramCreateView(CreateView):
+class ProgramCreateView(LoginRequiredMixin, CreateView):
     """
     Create a new program.
     Uses ProgramForm automatically
@@ -302,7 +303,7 @@ class ProgramCreateView(CreateView):
     success_url = reverse_lazy("manage_programs")
 
 
-class ProgramUpdateView(UpdateView):
+class ProgramUpdateView(LoginRequiredMixin, UpdateView):
     """
     Editing an existing program.
     Reuses the same form as the create view.
@@ -313,7 +314,7 @@ class ProgramUpdateView(UpdateView):
     success_url = reverse_lazy("manage_programs")
 
 
-class ProgramDeleteView(DeleteView):
+class ProgramDeleteView(LoginRequiredMixin, DeleteView):
     """
     Delete an existing program
     """
