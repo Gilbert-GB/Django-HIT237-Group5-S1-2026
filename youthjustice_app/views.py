@@ -45,6 +45,7 @@ def programs(request):
     selected_region = request.GET.get("region", "").strip()
     selected_category = request.GET.get("category", "").strip()
     selected_sort = request.GET.get("sort", "").strip()
+    selected_age = request.GET.get("age", "").strip()
 
     program_list = Program.objects.available().select_related("organisation")
 
@@ -56,6 +57,13 @@ def programs(request):
 
     if selected_category:
         program_list = program_list.filter(category=selected_category)
+    # Filter by age — show programs that accept this age
+    if selected_age:
+        try:
+            age_value = int(selected_age)
+            program_list = program_list.filter(age_min__lte=age_value, age_max__gte=age_value)
+        except ValueError:
+            pass
 
     # Sorting
     if selected_sort == "name_asc":
@@ -75,6 +83,7 @@ def programs(request):
         "selected_region": selected_region,
         "selected_category": selected_category,
         "selected_sort": selected_sort,
+        "selected_age": selected_age,
         "region_choices": Program.REGION_CHOICES,
         "category_choices": Program.CATEGORY_CHOICES,
     }

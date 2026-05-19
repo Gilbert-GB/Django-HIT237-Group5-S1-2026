@@ -255,7 +255,9 @@
                 </option>
             {% endfor %}
         </select>
-
+        <input type="number" name="age" placeholder="Age (e.g. 14)" value="{{ selected_age }}"
+                    min="0" max="25"
+                    style="padding: 10px; width: 140px; border: 1px solid #ccc; border-radius: 8px; margin-left: 8px;">
         <select name="sort">
             <option value="">Sort By</option>
             <option value="name_asc" {% if selected_sort == "name_asc" %}selected{% endif %}>Name A to Z</option>
@@ -303,21 +305,21 @@
         {% if page_obj.has_other_pages %}
         <div class="pagination">
             {% if page_obj.has_previous %}
-                <a href="?page=1{% if search_query %}&search={{ search_query }}{% endif %}{% if selected_region %}&region={{ selected_region }}{% endif %}{% if selected_category %}&category={{ selected_category }}{% endif %}{% if selected_sort %}&sort={{ selected_sort }}{% endif %}">&laquo; First</a>
-                <a href="?page={{ page_obj.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if selected_region %}&region={{ selected_region }}{% endif %}{% if selected_category %}&category={{ selected_category }}{% endif %}{% if selected_sort %}&sort={{ selected_sort }}{% endif %}">&lsaquo; Prev</a>
+                <a href="?page=1{% if search_query %}&search={{ search_query }}{% endif %}{% if selected_region %}&region={{ selected_region }}{% endif %}{% if selected_category %}&category={{ selected_category }}{% endif %}{% if selected_sort %}&sort={{ selected_sort }}{% endif %} {% if selected_age %}&age={{ selected_age }}{% endif %}">&laquo; First</a>
+                <a href="?page={{ page_obj.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if selected_region %}&region={{ selected_region }}{% endif %}{% if selected_category %}&category={{ selected_category }}{% endif %}{% if selected_sort %}&sort={{ selected_sort }}{% endif %}{% if selected_age %}&age={{ selected_age }}{% endif %}">&lsaquo; Prev</a>
             {% endif %}
 
             {% for num in page_obj.paginator.page_range %}
                 {% if page_obj.number == num %}
                     <span class="current-page">{{ num }}</span>
                 {% elif num > page_obj.number|add:"-3" and num < page_obj.number|add:"3" %}
-                    <a href="?page={{ num }}{% if search_query %}&search={{ search_query }}{% endif %}{% if selected_region %}&region={{ selected_region }}{% endif %}{% if selected_category %}&category={{ selected_category }}{% endif %}{% if selected_sort %}&sort={{ selected_sort }}{% endif %}">{{ num }}</a>
+                    <a href="?page={{ num }}{% if search_query %}&search={{ search_query }}{% endif %}{% if selected_region %}&region={{ selected_region }}{% endif %}{% if selected_category %}&category={{ selected_category }}{% endif %}{% if selected_sort %}&sort={{ selected_sort }}{% endif %}{% if selected_age %}&age={{ selected_age }}{% endif %}">{{ num }}</a>
                 {% endif %}
             {% endfor %}
 
             {% if page_obj.has_next %}
-                <a href="?page={{ page_obj.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if selected_region %}&region={{ selected_region }}{% endif %}{% if selected_category %}&category={{ selected_category }}{% endif %}{% if selected_sort %}&sort={{ selected_sort }}{% endif %}">Next &rsaquo;</a>
-                <a href="?page={{ page_obj.paginator.num_pages }}{% if search_query %}&search={{ search_query }}{% endif %}{% if selected_region %}&region={{ selected_region }}{% endif %}{% if selected_category %}&category={{ selected_category }}{% endif %}{% if selected_sort %}&sort={{ selected_sort }}{% endif %}">Last &raquo;</a>
+                <a href="?page={{ page_obj.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if selected_region %}&region={{ selected_region }}{% endif %}{% if selected_category %}&category={{ selected_category }}{% endif %}{% if selected_sort %}&sort={{ selected_sort }}{% endif %}{% if selected_age %}&age={{ selected_age }}{% endif %}">Next &rsaquo;</a>
+                <a href="?page={{ page_obj.paginator.num_pages }}{% if search_query %}&search={{ search_query }}{% endif %}{% if selected_region %}&region={{ selected_region }}{% endif %}{% if selected_category %}&category={{ selected_category }}{% endif %}{% if selected_sort %}&sort={{ selected_sort }}{% endif %}{% if selected_age %}&age={{ selected_age }}{% endif %}">Last &raquo;</a>
             {% endif %}
         </div>
         {% endif %}
