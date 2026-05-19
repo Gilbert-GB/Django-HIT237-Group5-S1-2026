@@ -115,66 +115,85 @@ def dashboard_page(request):
 
 def dashboard_data(request):
     """
-    Filters:
-    - region
-    - year
+    JSON API endpoint for crime dashboard.
+    Uses DashboardService for clean separation of query logic.
     """
+    from .dashboard_service import DashboardService
 
     region = request.GET.get("region")
     year = request.GET.get("year")
 
-    data = CrimeData.objects.all()
+    # If filters are active, use filtered queries
+    if region or year:
+        data = CrimeData.objects.all()
 
-    if region:
-        data = data.filter(region=region)
+        if region:
+            data = data.filter(region=region)
+        if year:
+            data = data.filter(year=year)
 
-    if year:
-        data = data.filter(year=year)
+        monthly_trend = list(
+            data.values("year", "month")
+            .annotate(total_crimes=Sum("count"))
+            .order_by("year", "month")
+        )
 
-    monthly_trend = list(
-        data.values("year", "month")
-        .annotate(total_crimes=Sum("count"))
-        .order_by("year", "month")
-    )
+        top_regions = list(
+            data.values("region")
+            .annotate(total=Sum("count"))
+            .order_by("-total")[:10]
+        )
 
-    top_regions = list(
-        data.values("region")
-        .annotate(total=Sum("count"))
-        .order_by("-total")[:10]
-    )
+        category_breakdown = list(
+            data.values("offence_category")
+            .annotate(total=Sum("count"))
+            .order_by("-total")[:10]
+        )
 
-    category_breakdown = list(
-        data.values("offence_category")
-        .annotate(total=Sum("count"))
-        .order_by("-total")[:10]
-    )
+        total_crimes = data.aggregate(total=Sum("count"))["total"] or 0
 
-    total_crimes = data.aggregate(total=Sum("count"))["total"] or 0
+        top_region = (
+            data.values("region")
+            .annotate(total=Sum("count"))
+            .order_by("-total")
+            .first()
+        )
 
-    top_region = (
-        data.values("region")
-        .annotate(total=Sum("count"))
-        .order_by("-total")
-        .first()
-    )
+        top_crime = (
+            data.values("offence_type")
+            .annotate(total=Sum("count"))
+            .order_by("-total")
+            .first()
+        )
 
-    top_crime = (
-        data.values("offence_type")
-        .annotate(total=Sum("count"))
-        .order_by("-total")
-        .first()
-    )
+        return JsonResponse({
+            "kpis": {
+                "total_crimes": total_crimes,
+                "top_region": top_region,
+                "top_crime": top_crime,
+            },
+            "charts": {
+                "monthly_trend": monthly_trend,
+                "top_regions": top_regions,
+                "category_breakdown": category_breakdown,
+            }
+        })
+
+    # No filters — use DashboardService (clean, reusable)
+    kpis = DashboardService.get_kpis()
 
     return JsonResponse({
-        "kpis": {
-            "total_crimes": total_crimes,
-            "top_region": top_region,
-            "top_crime": top_crime,
-        },
+        "kpis": kpis,
         "charts": {
-            "monthly_trend": monthly_trend,
-            "top_regions": top_regions,
-            "category_breakdown": category_breakdown,
+            "monthly_trend": DashboardService.get_monthly_trend(),
+            "top_regions": DashboardService.get_top_regions(),
+            "category_breakdown": DashboardService.get_category_breakdown(),
+        },
+        "extra": {
+            "yearly_trend": DashboardService.get_yearly_trend(),
+            "alcohol_stats": DashboardService.get_alcohol_stats(),
+            "dv_stats": DashboardService.get_dv_stats(),
+            "top_offences": DashboardService.get_top_offences(),
         }
     })
 
