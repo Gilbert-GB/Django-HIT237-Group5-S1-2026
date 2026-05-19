@@ -9,7 +9,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 from .forms import ProgramForm
-from .models import Program, CrimeData, EngagementData
+from .models import Program, CrimeData, EngagementData, Organisation
 
 
 # PUBLIC PAGES
@@ -105,6 +105,45 @@ def program_detail(request, pk):
 
 def about(request):
     return render(request, "youthjustice_app/about.html")
+
+def organisation_list(request):
+    """
+    Lists all organisations with their program count.
+    """
+    from django.db.models import Count
+
+    selected_type = request.GET.get("type", "").strip()
+
+    organisations = Organisation.objects.annotate(
+        program_count=Count("programs")
+    ).order_by("name")
+
+    if selected_type:
+        organisations = organisations.filter(organisation_type=selected_type)
+
+    context = {
+        "organisations": organisations,
+        "selected_type": selected_type,
+        "type_choices": Organisation.ORG_TYPE_CHOICES,
+    }
+    return render(request, "youthjustice_app/organisations.html", context)
+
+
+def organisation_detail(request, pk):
+    """
+    Shows one organisation and all its programs.
+    """
+    organisation = get_object_or_404(Organisation, pk=pk)
+
+    org_programs = organisation.programs.filter(is_available=True).order_by("name")
+
+    context = {
+        "organisation": organisation,
+        "programs": org_programs,
+        "total_programs": organisation.programs.count(),
+        "available_programs": org_programs.count(),
+    }
+    return render(request, "youthjustice_app/organisation_detail.html", context)
 
 
 # DASHBOARD

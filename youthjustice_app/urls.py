@@ -21,4 +21,8 @@ urlpatterns = [
     # Engagement dashboard
     path("engagement/", views.engagement_page, name="engagement"),
     path("api/engagement/", views.engagement_data, name="engagement_data"),
+
+    # Organisations
+    path("organisations/", views.organisation_list, name="organisations"),
+    path("organisations/<int:pk>/", views.organisation_detail, name="organisation_detail"),
 ]
