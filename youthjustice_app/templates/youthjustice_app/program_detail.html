@@ -91,5 +91,51 @@
     {% if program.website %}
         <a href="{{ program.website }}" target="_blank" class="website-link">Visit Official Website</a>
     {% endif %}
+
+    <!-- Related programs: Same region -->
+    {% if same_region %}
+    <div style="margin-top: 35px;">
+        <h3 style="color: #1e3a5f; margin-bottom: 18px;">Other Programs in {{ program.get_region_display }}</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px;">
+            {% for p in same_region %}
+            <div style="background: linear-gradient(180deg, #ffffff, #f9fcff); padding: 20px; border-radius: 18px; box-shadow: 0 10px 24px rgba(70,130,180,0.12); border: 1px solid rgba(70,130,180,0.12);">
+                {% if p.is_available %}
+                    <span style="display: inline-block; padding: 5px 12px; border-radius: 999px; font-size: 11px; font-weight: 700; background-color: #e6f7ec; color: #1f7a36; border: 1px solid #cdeed8; margin-bottom: 10px;">Available</span>
+                {% else %}
+                    <span style="display: inline-block; padding: 5px 12px; border-radius: 999px; font-size: 11px; font-weight: 700; background-color: #fdeced; color: #a12634; border: 1px solid #f7cfd4; margin-bottom: 10px;">Not Available</span>
+                {% endif %}
+                <h4 style="margin: 0 0 6px 0; font-size: 17px;">
+                    <a href="{% url 'program_detail' p.pk %}" style="text-decoration: none; color: #1c3553;">{{ p.name }}</a>
+                </h4>
+                <p style="color: #4a5a6a; font-size: 13px; margin: 4px 0;">{{ p.organisation.name }}</p>
+                <p style="color: #4a5a6a; font-size: 13px; margin: 4px 0;">{{ p.get_category_display }} · {{ p.age_min }}-{{ p.age_max }} yrs</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Related programs: Same category -->
+    {% if same_category %}
+    <div style="margin-top: 35px;">
+        <h3 style="color: #1e3a5f; margin-bottom: 18px;">More {{ program.get_category_display }} Programs</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px;">
+            {% for p in same_category %}
+            <div style="background: linear-gradient(180deg, #ffffff, #f9fcff); padding: 20px; border-radius: 18px; box-shadow: 0 10px 24px rgba(70,130,180,0.12); border: 1px solid rgba(70,130,180,0.12);">
+                {% if p.is_available %}
+                    <span style="display: inline-block; padding: 5px 12px; border-radius: 999px; font-size: 11px; font-weight: 700; background-color: #e6f7ec; color: #1f7a36; border: 1px solid #cdeed8; margin-bottom: 10px;">Available</span>
+                {% else %}
+                    <span style="display: inline-block; padding: 5px 12px; border-radius: 999px; font-size: 11px; font-weight: 700; background-color: #fdeced; color: #a12634; border: 1px solid #f7cfd4; margin-bottom: 10px;">Not Available</span>
+                {% endif %}
+                <h4 style="margin: 0 0 6px 0; font-size: 17px;">
+                    <a href="{% url 'program_detail' p.pk %}" style="text-decoration: none; color: #1c3553;">{{ p.name }}</a>
+                </h4>
+                <p style="color: #4a5a6a; font-size: 13px; margin: 4px 0;">{{ p.organisation.name }}</p>
+                <p style="color: #4a5a6a; font-size: 13px; margin: 4px 0;">{{ p.get_region_display }} · {{ p.age_min }}-{{ p.age_max }} yrs</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
 </div>
 {% endblock %}

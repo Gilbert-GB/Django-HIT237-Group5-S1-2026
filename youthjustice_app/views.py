@@ -92,15 +92,41 @@ def programs(request):
 
 
 def program_detail(request, pk):
+    """
+    Shows one program with related programs from same region and category.
+    """
     program = get_object_or_404(
         Program.objects.select_related("organisation"),
         pk=pk
     )
-    return render(
-        request,
-        "youthjustice_app/program_detail.html",
-        {"program": program},
+
+    # Programs in the same region (excluding current one)
+    same_region = (
+        Program.objects.available()
+        .filter(region=program.region)
+        .exclude(pk=program.pk)
+        .select_related("organisation")
+        [:4]
     )
+
+    # Programs in the same category (excluding current + already shown in region)
+    shown_ids = [p.pk for p in same_region]
+    shown_ids.append(program.pk)
+
+    same_category = (
+        Program.objects.available()
+        .filter(category=program.category)
+        .exclude(pk__in=shown_ids)
+        .select_related("organisation")
+        [:4]
+    )
+
+    context = {
+        "program": program,
+        "same_region": same_region,
+        "same_category": same_category,
+    }
+    return render(request, "youthjustice_app/program_detail.html", context)
 
 
 def about(request):
