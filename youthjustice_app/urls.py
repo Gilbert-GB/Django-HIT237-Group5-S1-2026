@@ -25,4 +25,9 @@ urlpatterns = [
     # Organisations
     path("organisations/", views.organisation_list, name="organisations"),
     path("organisations/<int:pk>/", views.organisation_detail, name="organisation_detail"),
+
+    # CSV exports
+    path("export/programs/", views.export_programs_csv, name="export_programs"),
+    path("export/crime/", views.export_crime_csv, name="export_crime"),
+    path("export/engagement/", views.export_engagement_csv, name="export_engagement"),
 ]

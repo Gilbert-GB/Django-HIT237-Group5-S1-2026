@@ -6,7 +6,8 @@ from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.core.paginator import Paginator
 from django.contrib.auth.mixins import LoginRequiredMixin
-
+import csv
+from django.http import HttpResponse
 
 from .forms import ProgramForm
 from .models import Program, CrimeData, EngagementData, Organisation
@@ -352,7 +353,169 @@ def engagement_data(request):
         "available_years": available_years,
     })
 
+def export_programs_csv(request):
+    """
+    Exports filtered programs as a downloadable CSV file.
+    Uses the same filters as the programs page.
+    """
 
+    search_query = request.GET.get("search", "").strip()
+    selected_region = request.GET.get("region", "").strip()
+    selected_category = request.GET.get("category", "").strip()
+    selected_age = request.GET.get("age", "").strip()
+
+    program_list = Program.objects.available().select_related("organisation")
+
+    if search_query:
+        program_list = Program.objects.search(search_query).select_related("organisation")
+
+    if selected_region:
+        program_list = program_list.filter(region=selected_region)
+
+    if selected_category:
+        program_list = program_list.filter(category=selected_category)
+
+    if selected_age:
+        try:
+            age_value = int(selected_age)
+            program_list = program_list.filter(age_min__lte=age_value, age_max__gte=age_value)
+        except ValueError:
+            pass
+
+    # Build CSV response
+    response = HttpResponse(content_type="text/csv")
+    response["Content-Disposition"] = 'attachment; filename="youth_justice_programs.csv"'
+
+    writer = csv.writer(response)
+    writer.writerow([
+        "Program Name",
+        "Organisation",
+        "Region",
+        "Category",
+        "Age Min",
+        "Age Max",
+        "Available",
+        "Description",
+        "Website",
+    ])
+
+    for program in program_list:
+        writer.writerow([
+            program.name,
+            program.organisation.name,
+            program.get_region_display(),
+            program.get_category_display(),
+            program.age_min,
+            program.age_max,
+            "Yes" if program.is_available else "No",
+            program.short_description,
+            program.website or "",
+        ])
+
+    return response
+
+
+def export_crime_csv(request):
+    """
+    Exports filtered crime data as a downloadable CSV file.
+    Uses the same filters as the dashboard.
+    """
+
+    region = request.GET.get("region", "").strip()
+    year = request.GET.get("year", "").strip()
+    category = request.GET.get("category", "").strip()
+
+    data = CrimeData.objects.all()
+
+    if region:
+        data = data.filter(region=region)
+
+    if year:
+        data = data.filter(year=int(year))
+
+    if category:
+        data = data.filter(offence_category=category)
+
+    response = HttpResponse(content_type="text/csv")
+    response["Content-Disposition"] = 'attachment; filename="nt_crime_data.csv"'
+
+    writer = csv.writer(response)
+    writer.writerow([
+        "Year",
+        "Month",
+        "Month Name",
+        "Region",
+        "Offence Category",
+        "Offence Type",
+        "Alcohol Involvement",
+        "DV Involvement",
+        "Count",
+    ])
+
+    for record in data:
+        writer.writerow([
+            record.year,
+            record.month,
+            record.month_name,
+            record.region,
+            record.offence_category_short,
+            record.offence_type,
+            record.alcohol_involvement,
+            record.dv_involvement,
+            record.count,
+        ])
+
+    return response
+
+
+def export_engagement_csv(request):
+    """
+    Exports filtered engagement data as a downloadable CSV file.
+    """
+
+    selected_year = request.GET.get("year", "").strip()
+    selected_sex = request.GET.get("sex", "").strip()
+    selected_status = request.GET.get("status", "").strip()
+
+    data = EngagementData.objects.all()
+
+    if selected_year:
+        data = data.filter(year=int(selected_year))
+
+    if selected_sex:
+        data = data.filter(sex=selected_sex)
+
+    if selected_status == "indigenous":
+        data = data.filter(indigenous_status="Aboriginal and Torres Strait Islander people")
+    elif selected_status == "non_indigenous":
+        data = data.filter(indigenous_status="Non-Indigenous people")
+
+    response = HttpResponse(content_type="text/csv")
+    response["Content-Disposition"] = 'attachment; filename="closing_the_gap_engagement.csv"'
+
+    writer = csv.writer(response)
+    writer.writerow([
+        "Year",
+        "Sex",
+        "Indigenous Status",
+        "Measure",
+        "NT Value (%)",
+        "National Value (%)",
+        "Gap (%)",
+    ])
+
+    for record in data:
+        writer.writerow([
+            record.year,
+            record.sex,
+            record.indigenous_status,
+            record.measure,
+            record.nt_display,
+            record.national_display,
+            record.gap_display,
+        ])
+
+    return response
 def engagement_page(request):
     return render(request, "youthjustice_app/engagement.html")
 # MANAGEMENT / CRUD Section

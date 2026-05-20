@@ -266,6 +266,12 @@
 
         <button type="submit">Filter</button>
     </form>
+    <div style="margin-bottom: 20px;">
+            <a href="{% url 'export_programs' %}?search={{ search_query }}&region={{ selected_region }}&category={{ selected_category }}&age={{ selected_age }}"
+               style="display: inline-block; padding: 10px 20px; background-color: #1e3a5f; color: white; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 14px;">
+                ⬇ Export as CSV
+            </a>
+        </div>
 </div>
 
 <a class="add-btn" href="{% url 'add_program' %}">+ Add Program</a>
