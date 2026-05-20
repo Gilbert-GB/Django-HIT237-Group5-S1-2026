@@ -225,10 +225,15 @@
         <h2>Crime by Region</h2>
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-bottom: 35px;">
             {% for item in crime_by_region %}
-            <div style="background: linear-gradient(180deg, #ffffff, #f9fcff); padding: 18px; border-radius: 14px; box-shadow: 0 8px 18px rgba(70,130,180,0.08); border: 1px solid rgba(70,130,180,0.10); text-align: center;">
-                <div style="font-size: 22px; font-weight: bold; color: #2f6fa3;">{{ item.total|floatformat:0 }}</div>
-                <div style="margin-top: 6px; color: #4a5a6a; font-weight: 600; font-size: 13px;">{{ item.region }}</div>
-            </div>
+          <a href="{% url 'region_profile' item.slug %}" style="text-decoration: none;">
+                <div style="background: linear-gradient(180deg, #ffffff, #f9fcff); padding: 18px; border-radius: 14px; box-shadow: 0 8px 18px rgba(70,130,180,0.08); border: 1px solid rgba(70,130,180,0.10); text-align: center; transition: transform 0.2s ease;"
+                     onmouseover="this.style.transform='translateY(-3px)'"
+                     onmouseout="this.style.transform='none'">
+                    <div style="font-size: 22px; font-weight: bold; color: #2f6fa3;">{{ item.total|floatformat:0 }}</div>
+                    <div style="margin-top: 6px; color: #4a5a6a; font-weight: 600; font-size: 13px;">{{ item.region }}</div>
+                    <div style="margin-top: 4px; color: #2f6fa3; font-size: 12px; font-weight: 600;">View Profile →</div>
+                </div>
+            </a>
             {% endfor %}
         </div>
         {% endif %}

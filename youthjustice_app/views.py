@@ -8,6 +8,7 @@ from django.core.paginator import Paginator
 from django.contrib.auth.mixins import LoginRequiredMixin
 import csv
 from django.http import HttpResponse
+from django.db.models import Sum
 
 from .forms import ProgramForm
 from .models import Program, CrimeData, EngagementData, Organisation
@@ -17,7 +18,7 @@ from .models import Program, CrimeData, EngagementData, Organisation
 
 def home(request):
     """
-    Home page:
+    Home page with program stats, crime summary, and engagement highlights.
     """
 
     featured_programs = (
@@ -29,11 +30,101 @@ def home(request):
     total_featured = Program.objects.featured().count()
     total_available = Program.objects.available().count()
 
+    # Crime data summary
+    total_offences = CrimeData.objects.aggregate(
+        total=Sum("count")
+    )["total"] or 0
+
+    crime_by_region = list(
+        CrimeData.objects.values("region")
+        .annotate(total=Sum("count"))
+        .order_by("-total")[:5]
+    )
+
+    # Add slugs for linking to region profiles
+    crime_region_to_slug = {
+        "Darwin": "darwin",
+        "Alice Springs": "alice_springs",
+        "Katherine": "katherine",
+        "Tennant Creek": "tennant_creek",
+        "Nhulunbuy": "nhulunbuy",
+        "Palmerston": "other",
+        "NT Balance": "other",
+    }
+    for item in crime_by_region:
+        item["slug"] = crime_region_to_slug.get(item["region"], "other")
+
+    top_offence = (
+        CrimeData.objects.values("offence_category")
+        .annotate(total=Sum("count"))
+        .order_by("-total")
+        .first()
+    )
+
+    # Engagement data summary
+    latest_engagement_year = (
+        EngagementData.objects.order_by("-year")
+        .values_list("year", flat=True)
+        .first()
+    )
+
+    indigenous_rate = None
+    non_indigenous_rate = None
+    engagement_gap = None
+
+    if latest_engagement_year:
+        indigenous_rate = (
+            EngagementData.objects.filter(
+                year=latest_engagement_year,
+                indigenous_status="Aboriginal and Torres Strait Islander people",
+                sex="All people",
+            ).values_list("value_nt", flat=True).first()
+        )
+
+        non_indigenous_rate = (
+            EngagementData.objects.filter(
+                year=latest_engagement_year,
+                indigenous_status="Non-Indigenous people",
+                sex="All people",
+            ).values_list("value_nt", flat=True).first()
+        )
+
+        if indigenous_rate is not None and non_indigenous_rate is not None:
+            engagement_gap = round(indigenous_rate - non_indigenous_rate, 1)
+
+    # Programs per region (for quick overview)
+    from django.db.models import Count
+    programs_per_region = list(
+        Program.objects.available()
+        .values("region")
+        .annotate(count=Count("id"))
+        .order_by("-count")
+    )
+
+    # Map region codes to display names
+    region_map = dict(Program.REGION_CHOICES)
+    for item in programs_per_region:
+        item["region_display"] = region_map.get(item["region"], item["region"])
+
     context = {
         "featured_programs": featured_programs,
         "total_programs": total_programs,
         "total_featured": total_featured,
         "total_available": total_available,
+
+        # Crime stats
+        "total_offences": total_offences,
+        "crime_by_region": crime_by_region,
+        "top_offence": top_offence,
+
+        # Engagement stats
+        "latest_engagement_year": latest_engagement_year,
+        "indigenous_rate": indigenous_rate,
+        "non_indigenous_rate": non_indigenous_rate,
+        "engagement_gap": engagement_gap,
+
+        # Programs per region
+        "programs_per_region": programs_per_region,
     }
     return render(request, "youthjustice_app/home.html", context)
 
@@ -516,6 +607,179 @@ def export_engagement_csv(request):
         ])
 
     return response
+
+
+def region_profile(request, region_slug):
+    """
+    Shows a combined profile for one NT region:
+    programs, crime statistics, and engagement data.
+    """
+    from django.db.models import Count, Avg
+
+    # Validate region slug
+    region_map = dict(Program.REGION_CHOICES)
+    if region_slug not in region_map:
+        from django.http import Http404
+        raise Http404("Region not found.")
+
+    region_display = region_map[region_slug]
+
+    # Map slug to crime data region name
+    # Crime CSV uses full names like "Alice Springs", program model uses slugs like "alice_springs"
+    crime_region_map = {
+        "darwin": "Darwin",
+        "alice_springs": "Alice Springs",
+        "katherine": "Katherine",
+        "tennant_creek": "Tennant Creek",
+        "nhulunbuy": "Nhulunbuy",
+        "other": "NT Balance",
+    }
+    crime_region_name = crime_region_map.get(region_slug, region_display)
+
+    # ── PROGRAMS ──
+    region_programs = (
+        Program.objects.available()
+        .filter(region=region_slug)
+        .select_related("organisation")
+        .order_by("name")
+    )
+
+    total_programs = region_programs.count()
+
+    programs_by_category = list(
+        region_programs
+        .values("category")
+        .annotate(count=Count("id"))
+        .order_by("-count")
+    )
+
+    # Map category codes to display names
+    category_map = dict(Program.CATEGORY_CHOICES)
+    for item in programs_by_category:
+        item["category_display"] = category_map.get(item["category"], item["category"])
+
+    # ── CRIME DATA ──
+    crime_data = CrimeData.objects.filter(region=crime_region_name)
+
+    total_offences = crime_data.aggregate(total=Sum("count"))["total"] or 0
+
+    crime_by_year = list(
+        crime_data.values("year")
+        .annotate(total=Sum("count"))
+        .order_by("year")
+    )
+
+    crime_by_category = list(
+        crime_data.values("offence_category")
+        .annotate(total=Sum("count"))
+        .order_by("-total")[:8]
+    )
+
+    # Clean category names for display
+    for item in crime_by_category:
+        parts = item["offence_category"].split(" ", 1)
+        if len(parts) > 1 and parts[0].isdigit():
+            item["category_short"] = parts[1]
+        else:
+            item["category_short"] = item["offence_category"]
+
+    top_offence = crime_by_category[0] if crime_by_category else None
+
+    crime_by_month = list(
+        crime_data.values("year", "month")
+        .annotate(total=Sum("count"))
+        .order_by("year", "month")
+    )
+
+    # Alcohol and DV stats for this region
+    alcohol_yes = crime_data.filter(alcohol_involvement="Yes").aggregate(
+        total=Sum("count")
+    )["total"] or 0
+
+    dv_yes = crime_data.filter(dv_involvement="Yes").aggregate(
+        total=Sum("count")
+    )["total"] or 0
+
+    alcohol_pct = round((alcohol_yes / total_offences) * 100, 1) if total_offences > 0 else 0
+    dv_pct = round((dv_yes / total_offences) * 100, 1) if total_offences > 0 else 0
+
+    # ── ENGAGEMENT DATA ──
+    # Engagement data is NT-wide (not per region), so we show NT values
+    latest_engagement_year = (
+        EngagementData.objects.order_by("-year")
+        .values_list("year", flat=True)
+        .first()
+    )
+
+    indigenous_rate = None
+    non_indigenous_rate = None
+    engagement_gap = None
+
+    if latest_engagement_year:
+        indigenous_rate = (
+            EngagementData.objects.filter(
+                year=latest_engagement_year,
+                indigenous_status="Aboriginal and Torres Strait Islander people",
+                sex="All people",
+            ).values_list("value_nt", flat=True).first()
+        )
+
+        non_indigenous_rate = (
+            EngagementData.objects.filter(
+                year=latest_engagement_year,
+                indigenous_status="Non-Indigenous people",
+                sex="All people",
+            ).values_list("value_nt", flat=True).first()
+        )
+
+        if indigenous_rate is not None and non_indigenous_rate is not None:
+            engagement_gap = round(indigenous_rate - non_indigenous_rate, 1)
+
+    # ── ALL REGIONS for comparison ──
+    all_regions_crime = list(
+        CrimeData.objects.values("region")
+        .annotate(total=Sum("count"))
+        .order_by("-total")
+    )
+
+    # Find this region's rank
+    region_rank = None
+    for i, item in enumerate(all_regions_crime):
+        if item["region"] == crime_region_name:
+            region_rank = i + 1
+            break
+
+    context = {
+        "region_slug": region_slug,
+        "region_display": region_display,
+        "region_choices": Program.REGION_CHOICES,
+
+        # Programs
+        "region_programs": region_programs[:6],
+        "total_programs": total_programs,
+        "programs_by_category": programs_by_category,
+
+        # Crime
+        "total_offences": total_offences,
+        "crime_by_year": crime_by_year,
+        "crime_by_category": crime_by_category,
+        "crime_by_month": crime_by_month,
+        "top_offence": top_offence,
+        "alcohol_pct": alcohol_pct,
+        "dv_pct": dv_pct,
+        "region_rank": region_rank,
+        "total_regions": len(all_regions_crime),
+
+        # Engagement (NT-wide)
+        "latest_engagement_year": latest_engagement_year,
+        "indigenous_rate": indigenous_rate,
+        "non_indigenous_rate": non_indigenous_rate,
+        "engagement_gap": engagement_gap,
+    }
+    return render(request, "youthjustice_app/region_profile.html", context)
+
+
+
 def engagement_page(request):
     return render(request, "youthjustice_app/engagement.html")
 # MANAGEMENT / CRUD Section

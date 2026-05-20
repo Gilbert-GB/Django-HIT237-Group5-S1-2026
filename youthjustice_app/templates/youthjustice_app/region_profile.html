@@ -1,0 +1,231 @@
+{% extends "youthjustice_app/base.html" %}
+
+{% block title %}{{ region_display }} | Youth Justice NT{% endblock %}
+
+{% block content %}
+
+<div class="container">
+
+    <a href="{% url 'home' %}" style="display: inline-block; margin-bottom: 18px; text-decoration: none; color: #2f6fa3; font-weight: 600;">
+        ← Back to Home
+    </a>
+
+    <!-- Region header -->
+    <div style="background: linear-gradient(135deg, #1e3a5f, #2b5d8a); padding: 30px; border-radius: 18px; color: white; margin-bottom: 30px;">
+        <h1 style="margin: 0 0 8px 0; font-size: 32px;">{{ region_display }}</h1>
+        <p style="margin: 0; opacity: 0.9; font-size: 15px;">Region profile — programs, crime statistics, and engagement data</p>
+        {% if region_rank %}
+        <p style="margin: 8px 0 0 0; opacity: 0.8; font-size: 13px;">
+            Ranked #{{ region_rank }} of {{ total_regions }} regions by total recorded offences
+        </p>
+        {% endif %}
+    </div>
+
+    <!-- KPI cards row -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 18px; margin-bottom: 30px;">
+
+        <div style="background: linear-gradient(180deg, #ffffff, #f9fcff); padding: 20px; border-radius: 18px; box-shadow: 0 10px 24px rgba(70,130,180,0.12); border: 1px solid rgba(70,130,180,0.12); text-align: center;">
+            <div style="font-size: 28px; font-weight: bold; color: #27ae60;">{{ total_programs }}</div>
+            <div style="margin-top: 6px; color: #4a5a6a; font-weight: 600; font-size: 13px;">Programs Available</div>
+        </div>
+
+        <div style="background: linear-gradient(180deg, #ffffff, #f9fcff); padding: 20px; border-radius: 18px; box-shadow: 0 10px 24px rgba(70,130,180,0.12); border: 1px solid rgba(70,130,180,0.12); text-align: center;">
+            <div style="font-size: 28px; font-weight: bold; color: #c0392b;">{{ total_offences|floatformat:0 }}</div>
+            <div style="margin-top: 6px; color: #4a5a6a; font-weight: 600; font-size: 13px;">Total Offences</div>
+        </div>
+
+        <div style="background: linear-gradient(180deg, #ffffff, #f9fcff); padding: 20px; border-radius: 18px; box-shadow: 0 10px 24px rgba(70,130,180,0.12); border: 1px solid rgba(70,130,180,0.12); text-align: center;">
+            <div style="font-size: 28px; font-weight: bold; color: #e67e22;">{{ alcohol_pct }}%</div>
+            <div style="margin-top: 6px; color: #4a5a6a; font-weight: 600; font-size: 13px;">Alcohol Related</div>
+        </div>
+
+        <div style="background: linear-gradient(180deg, #ffffff, #f9fcff); padding: 20px; border-radius: 18px; box-shadow: 0 10px 24px rgba(70,130,180,0.12); border: 1px solid rgba(70,130,180,0.12); text-align: center;">
+            <div style="font-size: 28px; font-weight: bold; color: #8e44ad;">{{ dv_pct }}%</div>
+            <div style="margin-top: 6px; color: #4a5a6a; font-weight: 600; font-size: 13px;">DV Related</div>
+        </div>
+
+        {% if indigenous_rate is not None %}
+        <div style="background: linear-gradient(180deg, #ffffff, #f9fcff); padding: 20px; border-radius: 18px; box-shadow: 0 10px 24px rgba(70,130,180,0.12); border: 1px solid rgba(70,130,180,0.12); text-align: center;">
+            <div style="font-size: 28px; font-weight: bold; color: {% if engagement_gap < 0 %}#c0392b{% else %}#27ae60{% endif %};">
+                {% if engagement_gap >= 0 %}+{% endif %}{{ engagement_gap|floatformat:1 }}%
+            </div>
+            <div style="margin-top: 6px; color: #4a5a6a; font-weight: 600; font-size: 13px;">Engagement Gap (NT)</div>
+            <div style="margin-top: 2px; color: #888; font-size: 11px;">{{ latest_engagement_year }}</div>
+        </div>
+        {% endif %}
+
+    </div>
+
+    <!-- Charts section -->
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 25px; margin-bottom: 30px;">
+
+        <div style="background: white; padding: 20px; border-radius: 14px; box-shadow: 0 4px 12px rgba(0,0,0,0.06);">
+            <h3 style="color: #1e3a5f; margin-top: 0;">Offences by Year</h3>
+            <canvas id="yearChart"></canvas>
+        </div>
+
+        <div style="background: white; padding: 20px; border-radius: 14px; box-shadow: 0 4px 12px rgba(0,0,0,0.06);">
+            <h3 style="color: #1e3a5f; margin-top: 0;">Offence Categories</h3>
+            <canvas id="categoryChart"></canvas>
+        </div>
+
+    </div>
+
+    <div style="background: white; padding: 20px; border-radius: 14px; box-shadow: 0 4px 12px rgba(0,0,0,0.06); margin-bottom: 30px;">
+        <h3 style="color: #1e3a5f; margin-top: 0;">Monthly Crime Trend</h3>
+        <canvas id="monthlyChart"></canvas>
+    </div>
+
+    <!-- Programs by category breakdown -->
+    {% if programs_by_category %}
+    <h2 style="color: #1e3a5f; margin-bottom: 18px;">Programs by Category in {{ region_display }}</h2>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-bottom: 30px;">
+        {% for item in programs_by_category %}
+        <a href="{% url 'programs' %}?region={{ region_slug }}&category={{ item.category }}" style="text-decoration: none;">
+            <div style="background: linear-gradient(180deg, #ffffff, #f9fcff); padding: 16px; border-radius: 14px; box-shadow: 0 8px 18px rgba(70,130,180,0.08); border: 1px solid rgba(70,130,180,0.10); text-align: center; transition: transform 0.2s ease;"
+                 onmouseover="this.style.transform='translateY(-3px)'"
+                 onmouseout="this.style.transform='none'">
+                <div style="font-size: 24px; font-weight: bold; color: #2f6fa3;">{{ item.count }}</div>
+                <div style="margin-top: 6px; color: #4a5a6a; font-weight: 600; font-size: 13px;">{{ item.category_display }}</div>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Programs list -->
+    <h2 style="color: #1e3a5f; margin-bottom: 18px;">Programs in {{ region_display }}</h2>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 22px; margin-bottom: 20px;">
+        {% for program in region_programs %}
+        <div style="background: linear-gradient(180deg, #ffffff, #f9fcff); padding: 22px; border-radius: 18px; box-shadow: 0 10px 24px rgba(70,130,180,0.12); border: 1px solid rgba(70,130,180,0.12);">
+
+            {% if program.is_available %}
+                <span style="display: inline-block; padding: 5px 12px; border-radius: 999px; font-size: 11px; font-weight: 700; background-color: #e6f7ec; color: #1f7a36; border: 1px solid #cdeed8; margin-bottom: 10px;">Available</span>
+            {% else %}
+                <span style="display: inline-block; padding: 5px 12px; border-radius: 999px; font-size: 11px; font-weight: 700; background-color: #fdeced; color: #a12634; border: 1px solid #f7cfd4; margin-bottom: 10px;">Not Available</span>
+            {% endif %}
+
+            <h3 style="margin: 0 0 6px 0; font-size: 18px;">
+                <a href="{% url 'program_detail' program.pk %}" style="text-decoration: none; color: #1c3553;">{{ program.name }}</a>
+            </h3>
+            <p style="color: #4a5a6a; font-size: 13px; margin: 4px 0;">{{ program.organisation.name }}</p>
+            <p style="color: #4a5a6a; font-size: 13px; margin: 4px 0;">{{ program.get_category_display }} · {{ program.age_min }}-{{ program.age_max }} yrs</p>
+        </div>
+        {% empty %}
+        <div style="background: white; padding: 18px; border-radius: 14px; box-shadow: 0 8px 18px rgba(70,130,180,0.08); border: 1px solid rgba(70,130,180,0.10);">
+            No programs available in this region.
+        </div>
+        {% endfor %}
+    </div>
+
+    {% if total_programs > 6 %}
+    <div style="text-align: center; margin-bottom: 30px;">
+        <a href="{% url 'programs' %}?region={{ region_slug }}" style="display: inline-block; padding: 12px 24px; background-color: #2f6fa3; color: white; text-decoration: none; border-radius: 10px; font-weight: 600;">
+            View All {{ total_programs }} Programs →
+        </a>
+    </div>
+    {% endif %}
+
+    <!-- Export -->
+    <div style="text-align: center; margin-bottom: 30px;">
+        <a href="{% url 'export_crime' %}?region={{ crime_region_name }}" style="display: inline-block; padding: 10px 20px; background-color: #1e3a5f; color: white; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 14px; margin: 5px;">
+            ⬇ Export Crime Data CSV
+        </a>
+        <a href="{% url 'export_programs' %}?region={{ region_slug }}" style="display: inline-block; padding: 10px 20px; background-color: #27ae60; color: white; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 14px; margin: 5px;">
+            ⬇ Export Programs CSV
+        </a>
+    </div>
+
+    <!-- Navigate to other regions -->
+    <h2 style="color: #1e3a5f; margin-bottom: 15px;">Explore Other Regions</h2>
+    <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 30px;">
+        {% for slug, name in region_choices %}
+            {% if slug != region_slug %}
+            <a href="{% url 'region_profile' slug %}" style="display: inline-block; padding: 10px 18px; background: white; color: #2f6fa3; text-decoration: none; border-radius: 999px; box-shadow: 0 4px 12px rgba(70,130,180,0.10); border: 1px solid rgba(70,130,180,0.12); font-weight: 600; font-size: 14px;">
+                {{ name }}
+            </a>
+            {% endif %}
+        {% endfor %}
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+// Data from Django context
+const yearLabels = [{% for item in crime_by_year %}{{ item.year }},{% endfor %}];
+const yearValues = [{% for item in crime_by_year %}{{ item.total }},{% endfor %}];
+
+const catLabels = [{% for item in crime_by_category %}"{{ item.category_short }}",{% endfor %}];
+const catValues = [{% for item in crime_by_category %}{{ item.total }},{% endfor %}];
+
+const monthLabels = [{% for item in crime_by_month %}"{{ item.year }}-{{ item.month }}",{% endfor %}];
+const monthValues = [{% for item in crime_by_month %}{{ item.total }},{% endfor %}];
+
+// Year bar chart
+new Chart(document.getElementById("yearChart"), {
+    type: "bar",
+    data: {
+        labels: yearLabels,
+        datasets: [{
+            label: "Total Offences",
+            data: yearValues,
+            backgroundColor: "#2f6fa3",
+            borderRadius: 6,
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: { legend: { display: false } },
+        scales: { y: { beginAtZero: true } }
+    }
+});
+
+// Category horizontal bar
+new Chart(document.getElementById("categoryChart"), {
+    type: "bar",
+    data: {
+        labels: catLabels,
+        datasets: [{
+            label: "Offences",
+            data: catValues,
+            backgroundColor: [
+                "#c0392b", "#e67e22", "#f1c40f", "#27ae60",
+                "#2f6fa3", "#8e44ad", "#1abc9c", "#34495e"
+            ],
+            borderRadius: 6,
+        }]
+    },
+    options: {
+        indexAxis: "y",
+        responsive: true,
+        plugins: { legend: { display: false } },
+        scales: { x: { beginAtZero: true } }
+    }
+});
+
+// Monthly line chart
+new Chart(document.getElementById("monthlyChart"), {
+    type: "line",
+    data: {
+        labels: monthLabels,
+        datasets: [{
+            label: "Monthly Offences",
+            data: monthValues,
+            borderColor: "#2f6fa3",
+            backgroundColor: "rgba(47,111,163,0.1)",
+            fill: true,
+            tension: 0.3,
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: { legend: { display: false } },
+        scales: { y: { beginAtZero: true } }
+    }
+});
+</script>
+
+{% endblock %}

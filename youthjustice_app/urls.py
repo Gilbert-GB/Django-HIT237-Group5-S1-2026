@@ -30,4 +30,7 @@ urlpatterns = [
     path("export/programs/", views.export_programs_csv, name="export_programs"),
     path("export/crime/", views.export_crime_csv, name="export_crime"),
     path("export/engagement/", views.export_engagement_csv, name="export_engagement"),
+
+    # Region profile
+    path("region/<str:region_slug>/", views.region_profile, name="region_profile"),
 ]
