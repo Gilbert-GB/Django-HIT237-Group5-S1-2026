@@ -6,6 +6,7 @@ from django.urls import reverse
 from .models import CrimeData, Organisation, Program
 from .services import ProgramSubmissionService
 
+
 # These tests demonstrate the existing custom manager methods in a simple way.
 class ManagerTests(TestCase):
     def setUp(self):
@@ -80,10 +81,76 @@ class CrudAccessTests(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertIn("/accounts/login/", response["Location"])
 
+    # Anonymous users should also be redirected from the live add-program page.
+    def test_add_program_requires_login(self):
+        response = self.client.get(reverse("add_program"))
+
+        self.assertEqual(response.status_code, 302)
+        self.assertIn("/accounts/login/", response["Location"])
+
+
+# These tests check direct model validation rules without going through views.
+class ModelValidationTests(TestCase):
+    def setUp(self):
+        self.organisation = Organisation.objects.create(
+            name="Model Validation Organisation",
+            email="model@example.com",
+        )
+
+    # Program should reject a minimum age greater than the maximum age.
+    def test_program_rejects_age_min_greater_than_age_max(self):
+        program = Program(
+            name="Invalid Age Program",
+            organisation=self.organisation,
+            region="darwin",
+            category="support",
+            age_min=18,
+            age_max=12,
+            is_available=True,
+            is_featured=False,
+            short_description="Invalid age range.",
+        )
+
+        with self.assertRaises(ValidationError):
+            program.full_clean()
+
+    # Program should reject featured programs that are marked unavailable.
+    def test_program_rejects_featured_when_unavailable(self):
+        program = Program(
+            name="Invalid Featured Program",
+            organisation=self.organisation,
+            region="darwin",
+            category="support",
+            age_min=12,
+            age_max=17,
+            is_available=False,
+            is_featured=True,
+            short_description="Invalid featured state.",
+        )
+
+        with self.assertRaises(ValidationError):
+            program.full_clean()
+
+    # CrimeData should reject invalid month values such as 13.
+    def test_crime_data_rejects_invalid_month(self):
+        crime_record = CrimeData(
+            year=2024,
+            month=13,
+            offence_category="02 Assault",
+            offence_type="Common assault",
+            alcohol_involvement="No",
+            dv_involvement="No",
+            region="Darwin",
+            count=10,
+        )
+
+        with self.assertRaises(ValidationError):
+            crime_record.full_clean()
+
 
 # These tests prove the transactional service layer workflow.
 class ProgramSubmissionServiceTests(TestCase):
-    # Added for Assessment feedback: common setup creates one organisation and valid program data.
+    # Common setup creates one organisation and valid program data.
     def setUp(self):
         self.organisation = Organisation.objects.create(
             name="Service Test Organisation",
@@ -120,6 +187,35 @@ class ProgramSubmissionServiceTests(TestCase):
 
         self.assertEqual(program.organisation, self.organisation)
         self.assertTrue(Program.objects.filter(name="Service Layer Program").exists())
+
+    # Service should reject missing organisation input before trying to save.
+    def test_service_requires_selected_organisation(self):
+        user = User.objects.create_user(username="regular-missing", password="testpass123")
+        invalid_data = self.program_data.copy()
+        invalid_data["organisation"] = None
+
+        with self.assertRaises(ValidationError):
+            ProgramSubmissionService.submit_program(
+                user=user,
+                cleaned_data=invalid_data,
+            )
+
+    # Service should reject an organisation object that no longer exists in the database.
+    def test_service_rejects_deleted_organisation(self):
+        user = User.objects.create_user(username="regular-deleted", password="testpass123")
+        deleted_org = Organisation.objects.create(
+            name="Deleted Organisation",
+            email="deleted@example.com",
+        )
+        invalid_data = self.program_data.copy()
+        invalid_data["organisation"] = deleted_org
+        deleted_org.delete()
+
+        with self.assertRaises(ValidationError):
+            ProgramSubmissionService.submit_program(
+                user=user,
+                cleaned_data=invalid_data,
+            )
 
     # Service blocks a sixth program for the same organisation.
     def test_organisation_with_five_programs_cannot_accept_sixth(self):
@@ -180,3 +276,41 @@ class ProgramCreateViewServiceTests(TestCase):
 
         self.assertRedirects(response, reverse("manage_programs"))
         self.assertTrue(Program.objects.filter(name="Create View Program").exists())
+
+    # Logged-in users should be able to open the add-program page itself.
+    def test_logged_in_user_can_access_add_program_page(self):
+        self.client.force_login(self.user)
+
+        response = self.client.get(reverse("add_program"))
+
+        self.assertEqual(response.status_code, 200)
+
+    # The dashboard API should keep returning JSON with the expected top-level keys.
+    def test_dashboard_api_returns_kpis_and_charts(self):
+        response = self.client.get(reverse("dashboard_data"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("kpis", response.json())
+        self.assertIn("charts", response.json())
+
+    # The create view should show an error and avoid creating a sixth program.
+    def test_create_view_blocks_sixth_program_for_organisation(self):
+        self.client.force_login(self.user)
+        for number in range(5):
+            Program.objects.create(
+                name=f"Existing Create View Program {number}",
+                organisation=self.organisation,
+                region="darwin",
+                category="support",
+                age_min=12,
+                age_max=17,
+                is_available=True,
+                is_featured=False,
+                short_description="Existing program.",
+            )
+
+        response = self.client.post(reverse("add_program"), self.valid_post_data())
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "This organisation already has 5 programs")
+        self.assertEqual(Program.objects.filter(organisation=self.organisation).count(), 5)
