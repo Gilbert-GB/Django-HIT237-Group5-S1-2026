@@ -1,6 +1,7 @@
+from django.core.exceptions import PermissionDenied, ValidationError
 from django.db.models import Sum
 from django.db import models
-from django.http import JsonResponse
+from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
@@ -12,6 +13,7 @@ from django.db.models import Sum
 
 from .forms import ProgramForm
 from .models import Program, CrimeData, EngagementData, Organisation
+from .services import ProgramSubmissionService
 
 
 # PUBLIC PAGES
@@ -812,6 +814,22 @@ class ProgramCreateView(LoginRequiredMixin, CreateView):
     form_class = ProgramForm
     template_name = "youthjustice_app/add_program.html"
     success_url = reverse_lazy("manage_programs")
+
+    # live create view now delegates multi-model creation to the service layer.
+    def form_valid(self, form):
+        try:
+            self.object = ProgramSubmissionService.submit_program(
+                user=self.request.user,
+                cleaned_data=form.cleaned_data,
+            )
+        except PermissionDenied as error:
+            form.add_error(None, str(error))
+            return self.form_invalid(form)
+        except ValidationError as error:
+            form.add_error(None, error)
+            return self.form_invalid(form)
+
+        return HttpResponseRedirect(self.get_success_url())
 
 
 class ProgramUpdateView(LoginRequiredMixin, UpdateView):
