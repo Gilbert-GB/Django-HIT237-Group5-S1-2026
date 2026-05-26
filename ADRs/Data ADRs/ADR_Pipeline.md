@@ -3,6 +3,9 @@
 ## Status
 Accepted
 
+## Last updated
+2026-05-26
+
 ---
 
 ## Context

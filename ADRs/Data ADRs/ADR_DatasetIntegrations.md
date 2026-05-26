@@ -3,6 +3,9 @@
 ## Status  
 Accepted
 
+## Last updated
+2026-05-26
+
 ---
 
 ## Context  
@@ -63,8 +66,6 @@ Only key attributes (e.g., offence type, location, time, summary values) will be
 
 ## Rationale  
 This approach ensures the system remains efficient and focused on user needs. It aligns with key design philosophies:
-
-WILL BE UPDATED!
  
 
 ---
@@ -74,3 +75,4 @@ WILL BE UPDATED!
 ```text
 data/models.py  
 data/management/commands/  
+```

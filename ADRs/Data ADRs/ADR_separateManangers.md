@@ -3,6 +3,9 @@
 ## Status
 Accepted
 
+## Last updated
+2026-05-26
+
 ## Context
 As the project grows, custom QuerySet and manager methods for multiple models can make `models.py` too large and harder to read. The team wanted a cleaner layout that still keeps query logic near the model layer.
 

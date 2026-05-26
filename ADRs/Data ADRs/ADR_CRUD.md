@@ -3,6 +3,9 @@
 ## Status
 Accepted
 
+## Last updated
+2026-05-26
+
 ## Context
 The application needs both a public interface for browsing programs and a way to demonstrate Create, Read, Update, and Delete functionality. Mixing CRUD controls directly into the public pages would make the interface more cluttered and harder to explain.
 

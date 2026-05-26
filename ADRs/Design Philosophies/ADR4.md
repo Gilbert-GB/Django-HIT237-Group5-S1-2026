@@ -1,4 +1,9 @@
 # ADR: Data Encapsulation in Pipeline Models
+## Status
+Accepted
+
+## Last updated
+2026-05-26
 
 ## Context
 After building the data import pipeline (see ADR_Pipeline.md), we had two new models — `CrimeData` and `EngagementData` — storing 6,574 crime records and 370 engagement records respectively.

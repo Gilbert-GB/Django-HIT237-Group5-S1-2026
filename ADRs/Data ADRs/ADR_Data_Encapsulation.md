@@ -1,5 +1,10 @@
 ## Architecture Decision Record (ADR) for:
 ### _Design Philosophy : Data Encapsulation_
+## Status
+Accepted
+
+## Last updated
+2026-05-26
 
 ## Introduction
 

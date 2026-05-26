@@ -1,6 +1,12 @@
 # Architecture Decision Record (ADR)
 ## Using Django QuerySet APIs for Data Processing
 
+## Status
+Accepted
+
+## Last updated
+2026-05-26
+
 ---
 
 ## Introduction
@@ -47,3 +53,4 @@ Key implementations include:
 CrimeData.objects.values("region") \
     .annotate(total=Sum("count")) \
     .order_by("-total")
+```

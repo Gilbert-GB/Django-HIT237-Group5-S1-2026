@@ -3,6 +3,9 @@
 ## Status
 Accepted
 
+## Last updated
+2026-05-26
+
 ## Context
 The project must include a browsable public site and a management area for CRUD. It also needs to remain understandable for beginner-level Django development. Mixing HTML presentation with query logic or validation logic would make the code harder to maintain and harder to justify architecturally.
 

@@ -3,6 +3,9 @@
 ## Status
 Accepted
 
+## Last updated
+2026-05-26
+
 ## Context
 The application needs multiple pages, CRUD functionality, model validation, filtering, and dashboard data handling. Repeating logic across files would make the project harder to maintain and harder to explain in viva.
 

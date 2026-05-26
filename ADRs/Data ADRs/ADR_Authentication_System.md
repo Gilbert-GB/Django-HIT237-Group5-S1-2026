@@ -1,6 +1,12 @@
 ## Architecture Decision Record (ADR) for:
 ### _Authentication System Design (Login, Register, Logout, Auto Login)_
 
+## Status
+Accepted
+
+## Last updated
+2026-05-26
+
 ---
 
 ## Introduction

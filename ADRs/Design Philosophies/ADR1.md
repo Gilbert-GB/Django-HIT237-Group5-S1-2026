@@ -3,6 +3,9 @@
 ## Status
 Accepted
 
+## Last updated
+2026-05-26
+
 ## Context
 The project is a student-built Django web application that must demonstrate architectural thinking, object-oriented design, and supporting documentation within a limited assessment timeframe. The team needed an approach that allowed functional progress quickly without building low-level infrastructure manually.
 
