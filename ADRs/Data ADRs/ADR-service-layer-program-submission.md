@@ -1,4 +1,4 @@
-# ADR-004: Add Service Layer for Program Submission Workflow
+# ADR: Add Service Layer for Program Submission Workflow
 
 Status: Accepted
 Date created: 2026-05-26
