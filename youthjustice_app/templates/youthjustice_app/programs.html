@@ -301,6 +301,11 @@
             {% if program.website %}
                 <a href="{{ program.website }}" target="_blank">Visit Website</a>
             {% endif %}
+
+            <a href="{% url 'compare_programs' %}?program_1={{ program.pk }}">
+                Compare This Program
+            </a>
+
         </div>
     {% empty %}
         <div class="empty-message">
