@@ -7,7 +7,8 @@ urlpatterns = [
     path("about/", views.about, name="about"),
     path("programs/", views.programs, name="programs"),
     path("programs/<int:pk>/", views.program_detail, name="program_detail"),
-
+    path("requests/", views.requests_page, name="requests"),
+    
     # Dashboard
     path("dashboard/", views.dashboard_page, name="dashboard"),
     path("api/dashboard/", views.dashboard_data, name="dashboard_data"),

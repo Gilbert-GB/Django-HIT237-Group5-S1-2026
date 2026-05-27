@@ -167,6 +167,98 @@ class Program(models.Model):
         return self.name
 
 
+# HELP REQUEST MODEL
+
+# Users can request help about a specific program.
+# Staff can update the status from admin.
+
+class HelpRequest(models.Model):
+    STATUS_CHOICES = [
+        ("new", "New"),
+        ("in_review", "In Review"),
+        ("contacted", "Contacted"),
+        ("closed", "Closed"),
+    ]
+
+    program = models.ForeignKey(
+        Program,
+        on_delete=models.CASCADE,
+        related_name="help_requests",
+    )
+
+    name = models.CharField(max_length=100)
+    email = models.EmailField()
+    message = models.TextField()
+
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default="new",
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+        verbose_name = "Help Request"
+        verbose_name_plural = "Help Requests"
+
+    def __str__(self):
+        return f"{self.name} - {self.program.name}"
+
+
+# PROGRAM INFO REPORT MODEL
+
+# Users can report wrong or outdated program information.
+
+class ProgramInfoReport(models.Model):
+    ISSUE_CHOICES = [
+        ("wrong_contact", "Wrong contact information"),
+        ("broken_link", "Broken website link"),
+        ("wrong_availability", "Wrong availability status"),
+        ("wrong_details", "Wrong program details"),
+        ("other", "Other"),
+    ]
+
+    STATUS_CHOICES = [
+        ("pending", "Pending"),
+        ("reviewed", "Reviewed"),
+        ("fixed", "Fixed"),
+        ("rejected", "Rejected"),
+    ]
+
+    program = models.ForeignKey(
+        Program,
+        on_delete=models.CASCADE,
+        related_name="info_reports",
+    )
+
+    issue_type = models.CharField(
+        max_length=30,
+        choices=ISSUE_CHOICES,
+    )
+
+    name = models.CharField(max_length=100, blank=True)
+    email = models.EmailField(blank=True)
+    message = models.TextField()
+
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default="pending",
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+        verbose_name = "Program Info Report"
+        verbose_name_plural = "Program Info Reports"
+
+    def __str__(self):
+        return f"{self.program.name} - {self.get_issue_type_display()}"
+    
+    
 # CRIME DATA SNAPSHOT MODEL
 
 # Relationship:

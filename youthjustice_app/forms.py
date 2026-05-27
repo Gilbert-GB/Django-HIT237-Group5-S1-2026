@@ -1,5 +1,5 @@
 from django import forms
-from .models import Program, Organisation
+from .models import Program, Organisation, HelpRequest, ProgramInfoReport 
 
 
 # ORGANISATION FORM
@@ -50,4 +50,39 @@ class ProgramForm(forms.ModelForm):
         widgets = {
             "short_description": forms.Textarea(attrs={"rows": 4}),
             "website": forms.URLInput(attrs={"placeholder": "https://example.com"}),
+        }
+# HELP REQUEST FORM
+
+# Users can request help about a selected program.
+
+class HelpRequestForm(forms.ModelForm):
+    class Meta:
+        model = HelpRequest
+        fields = [
+            "program",
+            "name",
+            "email",
+            "message",
+        ]
+        widgets = {
+            "message": forms.Textarea(attrs={"rows": 4}),
+        }
+
+
+# PROGRAM INFO REPORT FORM
+
+# Users can report wrong or outdated program information.
+
+class ProgramInfoReportForm(forms.ModelForm):
+    class Meta:
+        model = ProgramInfoReport
+        fields = [
+            "program",
+            "issue_type",
+            "name",
+            "email",
+            "message",
+        ]
+        widgets = {
+            "message": forms.Textarea(attrs={"rows": 4}),
         }

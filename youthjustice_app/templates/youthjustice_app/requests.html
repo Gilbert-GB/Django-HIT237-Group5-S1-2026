@@ -1,0 +1,85 @@
+{% extends "youthjustice_app/base.html" %}
+
+{% block content %}
+
+<section class="page-section">
+    <h1>Requests</h1>
+
+    <p>
+        Use this page to request help about a program, report incorrect information,
+        or check the status of a help request.
+    </p>
+
+    {% if success_message %}
+        <div class="alert-box">
+            <p>{{ success_message }}</p>
+        </div>
+    {% endif %}
+
+    {% if error_message %}
+        <div class="alert-box">
+            <p>{{ error_message }}</p>
+        </div>
+    {% endif %}
+</section>
+
+
+<section class="page-section">
+    <h2>Request Help</h2>
+
+    <form method="post">
+        {% csrf_token %}
+        <input type="hidden" name="form_type" value="help_request">
+
+        {{ help_form.as_p }}
+
+        <button type="submit">Submit Help Request</button>
+    </form>
+</section>
+
+
+<section class="page-section">
+    <h2>Report Incorrect Program Information</h2>
+
+    <form method="post">
+        {% csrf_token %}
+        <input type="hidden" name="form_type" value="info_report">
+
+        {{ report_form.as_p }}
+
+        <button type="submit">Submit Report</button>
+    </form>
+</section>
+
+
+<section class="page-section">
+    <h2>Track Request Status</h2>
+
+    <form method="get">
+        <p>
+            <label for="request_id">Request ID</label><br>
+            <input type="number" name="request_id" id="request_id" value="{{ request_id }}">
+        </p>
+
+        <p>
+            <label for="email">Email</label><br>
+            <input type="email" name="email" id="email" value="{{ email }}">
+        </p>
+
+        <button type="submit">Check Status</button>
+    </form>
+
+    {% if help_request %}
+        <div class="request-result">
+            <h3>Request Found</h3>
+
+            <p><strong>Program:</strong> {{ help_request.program.name }}</p>
+            <p><strong>Name:</strong> {{ help_request.name }}</p>
+            <p><strong>Status:</strong> {{ help_request.get_status_display }}</p>
+            <p><strong>Message:</strong> {{ help_request.message }}</p>
+            <p><strong>Submitted:</strong> {{ help_request.created_at }}</p>
+        </div>
+    {% endif %}
+</section>
+
+{% endblock %}

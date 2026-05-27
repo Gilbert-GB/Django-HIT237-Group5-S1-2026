@@ -1,5 +1,13 @@
 from django.contrib import admin
-from .models import Organisation, Program, CrimeDataSnapshot, CrimeData, EngagementData
+from .models import (
+    Organisation,
+    Program,
+    CrimeDataSnapshot,
+    CrimeData,
+    EngagementData,
+    HelpRequest,
+    ProgramInfoReport,
+)
 
 
 # ORGANISATION ADMIN
@@ -69,3 +77,33 @@ class EngagementDataAdmin(admin.ModelAdmin):
     )
     search_fields = ("indigenous_status", "sex", "measure")
     list_filter = ("year", "sex", "indigenous_status")
+
+    # HELP REQUEST ADMIN
+
+@admin.register(HelpRequest)
+class HelpRequestAdmin(admin.ModelAdmin):
+    list_display = (
+        "name",
+        "email",
+        "program",
+        "status",
+        "created_at",
+    )
+    search_fields = ("name", "email", "program__name")
+    list_filter = ("status", "created_at")
+    list_select_related = ("program",)
+
+
+# PROGRAM INFO REPORT ADMIN
+
+@admin.register(ProgramInfoReport)
+class ProgramInfoReportAdmin(admin.ModelAdmin):
+    list_display = (
+        "program",
+        "issue_type",
+        "status",
+        "created_at",
+    )
+    search_fields = ("program__name", "message", "email")
+    list_filter = ("issue_type", "status", "created_at")
+    list_select_related = ("program",)

@@ -1,7 +1,6 @@
-from django.core.exceptions import PermissionDenied, ValidationError
 from django.db.models import Sum
 from django.db import models
-from django.http import HttpResponseRedirect, JsonResponse
+from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
@@ -11,10 +10,8 @@ import csv
 from django.http import HttpResponse
 from django.db.models import Sum
 
-from .forms import ProgramForm
-from .models import Program, CrimeData, EngagementData, Organisation
-from .services import ProgramSubmissionService
-
+from .forms import ProgramForm, HelpRequestForm, ProgramInfoReportForm
+from .models import Program, CrimeData, EngagementData, Organisation, HelpRequest
 
 # PUBLIC PAGES
 
@@ -221,6 +218,65 @@ def program_detail(request, pk):
         "same_category": same_category,
     }
     return render(request, "youthjustice_app/program_detail.html", context)
+
+
+def requests_page(request):
+    """
+    Public users can request help, report incorrect information,
+    and track request status from one page.
+    """
+
+    help_form = HelpRequestForm()
+    report_form = ProgramInfoReportForm()
+
+    help_request = None
+    error_message = None
+    success_message = None
+
+    if request.method == "POST":
+
+        if request.POST.get("form_type") == "help_request":
+            help_form = HelpRequestForm(request.POST)
+
+            if help_form.is_valid():
+                help_request = help_form.save()
+                success_message = (
+                    f"Your help request has been submitted. "
+                    f"Your request ID is {help_request.id}."
+                )
+                help_form = HelpRequestForm()
+
+        elif request.POST.get("form_type") == "info_report":
+            report_form = ProgramInfoReportForm(request.POST)
+
+            if report_form.is_valid():
+                report_form.save()
+                success_message = "Your report has been submitted. Thank you."
+                report_form = ProgramInfoReportForm()
+
+    request_id = request.GET.get("request_id", "").strip()
+    email = request.GET.get("email", "").strip()
+
+    if request_id and email:
+        try:
+            help_request = HelpRequest.objects.get(
+                id=request_id,
+                email=email,
+            )
+        except HelpRequest.DoesNotExist:
+            error_message = "No request was found with those details."
+
+    context = {
+        "help_form": help_form,
+        "report_form": report_form,
+        "help_request": help_request,
+        "error_message": error_message,
+        "success_message": success_message,
+        "request_id": request_id,
+        "email": email,
+    }
+
+    return render(request, "youthjustice_app/requests.html", context)
 
 
 def about(request):
@@ -814,22 +870,6 @@ class ProgramCreateView(LoginRequiredMixin, CreateView):
     form_class = ProgramForm
     template_name = "youthjustice_app/add_program.html"
     success_url = reverse_lazy("manage_programs")
-
-    # live create view now delegates multi-model creation to the service layer.
-    def form_valid(self, form):
-        try:
-            self.object = ProgramSubmissionService.submit_program(
-                user=self.request.user,
-                cleaned_data=form.cleaned_data,
-            )
-        except PermissionDenied as error:
-            form.add_error(None, str(error))
-            return self.form_invalid(form)
-        except ValidationError as error:
-            form.add_error(None, error)
-            return self.form_invalid(form)
-
-        return HttpResponseRedirect(self.get_success_url())
 
 
 class ProgramUpdateView(LoginRequiredMixin, UpdateView):
