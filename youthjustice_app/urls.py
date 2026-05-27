@@ -7,6 +7,9 @@ urlpatterns = [
     path("about/", views.about, name="about"),
     path("programs/", views.programs, name="programs"),
     path("compare/", views.compare_programs, name="compare_programs"),
+    path("bookmarks/", views.bookmarks_page, name="bookmarks"),
+    path("programs/<int:pk>/bookmark/", views.add_bookmark, name="add_bookmark"),
+    path("programs/<int:pk>/remove-bookmark/", views.remove_bookmark, name="remove_bookmark"),
     path("programs/<int:pk>/", views.program_detail, name="program_detail"),
     path("requests/", views.requests_page, name="requests"),
     

@@ -1,7 +1,7 @@
 from django.db.models import Sum
 from django.db import models
 from django.http import JsonResponse
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.core.paginator import Paginator
@@ -928,3 +928,57 @@ def compare_programs(request):
     }
 
     return render(request, "youthjustice_app/compare_programs.html", context)
+
+
+def add_bookmark(request, pk):
+    """
+    Save a program in the user's browser session.
+    """
+    program = get_object_or_404(Program, pk=pk)
+
+    bookmarked_programs = request.session.get("bookmarked_programs", [])
+
+    if program.pk not in bookmarked_programs:
+        bookmarked_programs.append(program.pk)
+        request.session["bookmarked_programs"] = bookmarked_programs
+
+    return redirect("program_detail", pk=program.pk)
+
+
+def remove_bookmark(request, pk):
+    """
+    Remove a saved program from the user's browser session.
+    """
+    program = get_object_or_404(Program, pk=pk)
+
+    bookmarked_programs = request.session.get("bookmarked_programs", [])
+
+    if program.pk in bookmarked_programs:
+        bookmarked_programs.remove(program.pk)
+        request.session["bookmarked_programs"] = bookmarked_programs
+
+    return redirect("bookmarks")
+
+
+def bookmarks_page(request):
+    """
+    Show all programs saved by the user.
+    """
+    bookmarked_programs = request.session.get("bookmarked_programs", [])
+
+    programs = list(
+        Program.objects.available()
+        .filter(id__in=bookmarked_programs)
+        .select_related("organisation")
+    )
+
+    programs = sorted(
+        programs,
+        key=lambda program: bookmarked_programs.index(program.id)
+    )
+
+    context = {
+        "programs": programs,
+    }
+
+    return render(request, "youthjustice_app/bookmarks.html", context)

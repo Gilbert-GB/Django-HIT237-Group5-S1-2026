@@ -1,0 +1,40 @@
+﻿{% extends "youthjustice_app/base.html" %}
+
+{% block content %}
+
+<section class="page-section">
+    <h1>Saved Programs</h1>
+
+    <p>
+        These are the programs you saved while browsing.
+    </p>
+
+    {% if programs %}
+        <div class="program-grid">
+            {% for program in programs %}
+                <div class="program-card">
+                    <h2>{{ program.name }}</h2>
+
+                    <p><strong>Organisation:</strong> {{ program.organisation.name }}</p>
+                    <p><strong>Region:</strong> {{ program.get_region_display }}</p>
+                    <p><strong>Category:</strong> {{ program.get_category_display }}</p>
+                    <p><strong>Age Range:</strong> {{ program.age_range_display }}</p>
+
+                    <p>{{ program.short_description }}</p>
+
+                    <a href="{% url 'program_detail' program.pk %}">View Details</a>
+
+                    <form method="post" action="{% url 'remove_bookmark' program.pk %}">
+                        {% csrf_token %}
+                        <button type="submit">Remove Bookmark</button>
+                    </form>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>No programs saved yet.</p>
+        <a href="{% url 'programs' %}">Browse Programs</a>
+    {% endif %}
+</section>
+
+{% endblock %}
