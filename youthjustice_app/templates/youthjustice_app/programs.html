@@ -1,6 +1,24 @@
 {% extends "youthjustice_app/base.html" %}
 
-{% block title %}Programs | Youth Justice NT{% endblock %}
+{% block title %}Programs | Youth Justice NT
+<script>
+function shareProgram(programUrl, programName) {
+    const fullUrl = window.location.origin + programUrl;
+
+    if (navigator.share) {
+        navigator.share({
+            title: programName,
+            text: "Here is a youth support program that may be useful.",
+            url: fullUrl
+        });
+    } else {
+        navigator.clipboard.writeText(fullUrl);
+        alert("Program link copied.");
+    }
+}
+</script>
+
+{% endblock %}
 
 {% block extra_head %}
 <style>
@@ -216,6 +234,24 @@
             font-size: 14px;
         }
 </style>
+
+<script>
+function shareProgram(programUrl, programName) {
+    const fullUrl = window.location.origin + programUrl;
+
+    if (navigator.share) {
+        navigator.share({
+            title: programName,
+            text: "Here is a youth support program that may be useful.",
+            url: fullUrl
+        });
+    } else {
+        navigator.clipboard.writeText(fullUrl);
+        alert("Program link copied.");
+    }
+}
+</script>
+
 {% endblock %}
 
 {% block content %}
@@ -306,6 +342,11 @@
                 Compare This Program
             </a>
 
+            <button type="button" onclick="shareProgram('{% url 'program_detail' program.id %}', '{{ program.name|escapejs }}')">
+                Share Program
+            </button>
+
+
         </div>
     {% empty %}
         <div class="empty-message">
@@ -335,4 +376,22 @@
         </div>
         {% endif %}
 </div>
+
+<script>
+function shareProgram(programUrl, programName) {
+    const fullUrl = window.location.origin + programUrl;
+
+    if (navigator.share) {
+        navigator.share({
+            title: programName,
+            text: "Here is a youth support program that may be useful.",
+            url: fullUrl
+        });
+    } else {
+        navigator.clipboard.writeText(fullUrl);
+        alert("Program link copied.");
+    }
+}
+</script>
+
 {% endblock %}
