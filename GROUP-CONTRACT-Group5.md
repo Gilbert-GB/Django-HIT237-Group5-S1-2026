@@ -91,8 +91,17 @@ All team members have reviewed CDU’s academic integrity policies. AI tools may
   - **Frontend implementation** (home, programs, about, and detail pages)
   - **Template design and UI improvements** (layout, styling, consistency)
   - **Integration of backend data with frontend templates**
+  - **User interaction functionality improvements** for the program directory
+    - Added **user request and report functionality** so users can request help and report incorrect program information
+    - Added **request status tracking** so users can check the progress of submitted help requests
+    - Added **program comparison functionality** so users can compare selected programs side by side
+    - Added **program bookmark functionality** so users can save and remove programs for later viewing
+    - Added **saved program count** in the navigation bar
+    - Added **program link sharing functionality** so users can share or copy program links
+  - Created the **ADR for user interaction functionality improvements**
   - **Final review**
   - **Quality checking** (formatting, consistency, completeness)
+
 
 ---
 
