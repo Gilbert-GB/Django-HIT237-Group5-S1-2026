@@ -1,7 +1,7 @@
 from django.db.models import Sum
 from django.db import models
 from django.http import JsonResponse
-from django.shortcuts import get_object_or_404, render, redirect
+from django.shortcuts import get_object_or_404, render, redirect, redirect
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.core.paginator import Paginator
@@ -212,10 +212,13 @@ def program_detail(request, pk):
         [:4]
     )
 
+    bookmarked_programs = request.session.get("bookmarked_programs", [])
+
     context = {
         "program": program,
         "same_region": same_region,
         "same_category": same_category,
+        "is_bookmarked": program.pk in bookmarked_programs,
     }
     return render(request, "youthjustice_app/program_detail.html", context)
 
@@ -956,6 +959,11 @@ def remove_bookmark(request, pk):
     if program.pk in bookmarked_programs:
         bookmarked_programs.remove(program.pk)
         request.session["bookmarked_programs"] = bookmarked_programs
+
+    next_page = request.POST.get("next", "")
+
+    if next_page == "program_detail":
+        return redirect("program_detail", pk=program.pk)
 
     return redirect("bookmarks")
 

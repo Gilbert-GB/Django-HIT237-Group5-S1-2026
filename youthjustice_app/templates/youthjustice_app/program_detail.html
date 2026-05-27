@@ -1,11 +1,20 @@
 {% extends "youthjustice_app/base.html" %}
 
 {% block title %}{{ program.name }} | Youth Justice NT
+
 <div class="program-actions">
-    <form method="post" action="{% url 'add_bookmark' program.pk %}">
-        {% csrf_token %}
-        <button type="submit">Save Bookmark</button>
-    </form>
+    {% if is_bookmarked %}
+        <form method="post" action="{% url 'remove_bookmark' program.pk %}">
+            {% csrf_token %}
+            <input type="hidden" name="next" value="program_detail">
+            <button type="submit">Remove Bookmark</button>
+        </form>
+    {% else %}
+        <form method="post" action="{% url 'add_bookmark' program.pk %}">
+            {% csrf_token %}
+            <button type="submit">Save Bookmark</button>
+        </form>
+    {% endif %}
 
     <a href="{% url 'bookmarks' %}">View Saved Programs</a>
 </div>
@@ -79,11 +88,20 @@
     }
 </style>
 
+
 <div class="program-actions">
-    <form method="post" action="{% url 'add_bookmark' program.pk %}">
-        {% csrf_token %}
-        <button type="submit">Save Bookmark</button>
-    </form>
+    {% if is_bookmarked %}
+        <form method="post" action="{% url 'remove_bookmark' program.pk %}">
+            {% csrf_token %}
+            <input type="hidden" name="next" value="program_detail">
+            <button type="submit">Remove Bookmark</button>
+        </form>
+    {% else %}
+        <form method="post" action="{% url 'add_bookmark' program.pk %}">
+            {% csrf_token %}
+            <button type="submit">Save Bookmark</button>
+        </form>
+    {% endif %}
 
     <a href="{% url 'bookmarks' %}">View Saved Programs</a>
 </div>
@@ -159,11 +177,20 @@
     {% endif %}
 </div>
 
+
 <div class="program-actions">
-    <form method="post" action="{% url 'add_bookmark' program.pk %}">
-        {% csrf_token %}
-        <button type="submit">Save Bookmark</button>
-    </form>
+    {% if is_bookmarked %}
+        <form method="post" action="{% url 'remove_bookmark' program.pk %}">
+            {% csrf_token %}
+            <input type="hidden" name="next" value="program_detail">
+            <button type="submit">Remove Bookmark</button>
+        </form>
+    {% else %}
+        <form method="post" action="{% url 'add_bookmark' program.pk %}">
+            {% csrf_token %}
+            <button type="submit">Save Bookmark</button>
+        </form>
+    {% endif %}
 
     <a href="{% url 'bookmarks' %}">View Saved Programs</a>
 </div>
