@@ -6,6 +6,7 @@ urlpatterns = [
     path("", views.home, name="home"),
     path("about/", views.about, name="about"),
     path("programs/", views.programs, name="programs"),
+    path("compare/", views.compare_programs, name="compare_programs"),
     path("programs/<int:pk>/", views.program_detail, name="program_detail"),
     path("requests/", views.requests_page, name="requests"),
     
@@ -35,3 +36,4 @@ urlpatterns = [
     # Region profile
     path("region/<str:region_slug>/", views.region_profile, name="region_profile"),
 ]
+

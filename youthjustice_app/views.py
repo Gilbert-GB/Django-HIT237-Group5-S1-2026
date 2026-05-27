@@ -890,3 +890,41 @@ class ProgramDeleteView(LoginRequiredMixin, DeleteView):
     model = Program
     template_name = "youthjustice_app/delete_program.html"
     success_url = reverse_lazy("manage_programs")
+
+def compare_programs(request):
+    """
+    Public users can compare selected programs side by side.
+    """
+
+    all_programs = (
+        Program.objects.available()
+        .select_related("organisation")
+        .order_by("name")
+    )
+
+    selected_ids = [
+        request.GET.get("program_1"),
+        request.GET.get("program_2"),
+        request.GET.get("program_3"),
+    ]
+
+    selected_ids = list(dict.fromkeys([item for item in selected_ids if item]))
+
+    selected_programs = (
+        Program.objects.available()
+        .filter(id__in=selected_ids)
+        .select_related("organisation")
+    )
+
+    selected_programs = sorted(
+        selected_programs,
+        key=lambda program: selected_ids.index(str(program.id))
+    )
+
+    context = {
+        "all_programs": all_programs,
+        "selected_programs": selected_programs,
+        "selected_ids": selected_ids,
+    }
+
+    return render(request, "youthjustice_app/compare_programs.html", context)

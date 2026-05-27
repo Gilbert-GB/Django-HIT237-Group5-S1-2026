@@ -1,0 +1,129 @@
+﻿{% extends "youthjustice_app/base.html" %}
+
+{% block content %}
+
+<section class="page-section">
+    <h1>Compare Programs</h1>
+
+    <p>Select two or three programs to compare their details side by side.</p>
+
+    <form method="get">
+        <p>
+            <label>Program 1</label><br>
+            <select name="program_1">
+                <option value="">Choose a program</option>
+                {% for program in all_programs %}
+                    <option value="{{ program.id }}">{{ program.name }}</option>
+                {% endfor %}
+            </select>
+        </p>
+
+        <p>
+            <label>Program 2</label><br>
+            <select name="program_2">
+                <option value="">Choose a program</option>
+                {% for program in all_programs %}
+                    <option value="{{ program.id }}">{{ program.name }}</option>
+                {% endfor %}
+            </select>
+        </p>
+
+        <p>
+            <label>Program 3</label><br>
+            <select name="program_3">
+                <option value="">Optional</option>
+                {% for program in all_programs %}
+                    <option value="{{ program.id }}">{{ program.name }}</option>
+                {% endfor %}
+            </select>
+        </p>
+
+        <button type="submit">Compare Programs</button>
+    </form>
+</section>
+
+{% if selected_programs %}
+<section class="page-section">
+    <h2>Comparison Result</h2>
+
+    {% if selected_programs|length < 2 %}
+        <p>Please select at least two programs to compare.</p>
+    {% else %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Feature</th>
+                    {% for program in selected_programs %}
+                        <th>{{ program.name }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr>
+                    <td>Organisation</td>
+                    {% for program in selected_programs %}
+                        <td>{{ program.organisation.name }}</td>
+                    {% endfor %}
+                </tr>
+
+                <tr>
+                    <td>Region</td>
+                    {% for program in selected_programs %}
+                        <td>{{ program.get_region_display }}</td>
+                    {% endfor %}
+                </tr>
+
+                <tr>
+                    <td>Category</td>
+                    {% for program in selected_programs %}
+                        <td>{{ program.get_category_display }}</td>
+                    {% endfor %}
+                </tr>
+
+                <tr>
+                    <td>Age Range</td>
+                    {% for program in selected_programs %}
+                        <td>{{ program.age_range_display }}</td>
+                    {% endfor %}
+                </tr>
+
+                <tr>
+                    <td>Availability</td>
+                    {% for program in selected_programs %}
+                        <td>
+                            {% if program.is_available %}
+                                Available
+                            {% else %}
+                                Not available
+                            {% endif %}
+                        </td>
+                    {% endfor %}
+                </tr>
+
+                <tr>
+                    <td>Description</td>
+                    {% for program in selected_programs %}
+                        <td>{{ program.short_description }}</td>
+                    {% endfor %}
+                </tr>
+
+                <tr>
+                    <td>Website</td>
+                    {% for program in selected_programs %}
+                        <td>
+                            {% if program.website %}
+                                <a href="{{ program.website }}" target="_blank">Visit website</a>
+                            {% else %}
+                                Not provided
+                            {% endif %}
+                        </td>
+                    {% endfor %}
+                </tr>
+            </tbody>
+        </table>
+    {% endif %}
+</section>
+{% endif %}
+
+{% endblock %}
