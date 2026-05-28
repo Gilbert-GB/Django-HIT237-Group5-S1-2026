@@ -76,6 +76,11 @@ All team members have reviewed CDU’s academic integrity policies. AI tools may
   - Created supporting **ERDs, class diagrams, and architecture diagrams**
   - Reviewed the project against the **assessment rubric** and identified missing areas for improvement
   - Helped rebuild the app backend in a cleaner structure suitable for viva explanation and final submission
+    - Added a transactional **service layer** with `ProgramSubmissionService` to coordinate authenticated program submission, organisation lookup, validation, and atomic saving
+  - Integrated the service layer into the live **ProgramCreateView** while preserving existing CRUD templates and routes
+  - Added a **5-program limit per organisation** as a service-layer business rule
+  - Expanded the **test suite** to cover models, managers, services, views, dashboard API response keys, and permission boundaries
+  - Added ADRs explaining the **service-layer design**, **testing strategy**, **organisation creation control**, and **authentication test coverage**
 
 - **All Members:**
   - Research youth justice policies and community programs
