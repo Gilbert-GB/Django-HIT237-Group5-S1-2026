@@ -87,9 +87,38 @@ All team members have reviewed CDU’s academic integrity policies. AI tools may
   - Contribute to testing and feedback
   - Finalsed project submission after reviewing final draft
 
-- **Mahathir:**
-  - System design (architecture, database structure)
-  - Documentation writing (reports, ADRs)
+- **Mahathir (Pipeline, Functionality & Documentation):**
+  - Designed the initial **system architecture document** covering MTV pattern, database design, URL routing, and deployment strategy
+  - Created **hand-drawn wireframes** for all key pages (homepage, programs, program detail, dashboard, search) for team design discussions
+  - Created **system design diagrams** (overall architecture, request flow, app structure, database ER, data import flow, search system flow)
+  - Built the **data import pipeline** using Django custom management commands:
+    - `import_crime_data` — imports 6,574 NT Crime Statistics records from CSV
+    - `import_ctg_data` — imports 370 Closing the Gap engagement records from CSV
+    - Pipeline uses `bulk_create()` for performance and is idempotent (safe to re-run)
+  - Added **two new database models** (`CrimeData`, `EngagementData`) with full data encapsulation:
+    - Validation rules via `clean()` methods (age range checks, percentage bounds, negative value prevention)
+    - Computed properties via `@property` (month names, formatted percentages, engagement gap calculations, clean category names)
+    - Custom query managers (`CrimeDataManager`, `EngagementDataManager`) with reusable filter and aggregation methods
+  - Implemented **10 functionality improvements** for Assessment 4:
+    1. **Pagination** on programs page (9 per page, filter state preserved across pages)
+    2. **Engagement data dashboard** — full page with 3 Chart.js charts (trend line, sex comparison, indigenous status comparison), 4 KPI cards, 3 interactive filters, and JSON API endpoint
+    3. **Age filter** on programs page — users type an age and see matching programs
+    4. **Login protection** on all CRUD views using `LoginRequiredMixin`
+    5. **DashboardService integration** — connected existing unused service layer to dashboard views, eliminated duplicate query code
+    6. **Organisation list and detail pages** — browse organisations with program counts, filter by type, view all programs per organisation
+    7. **Related programs on detail page** — "Other programs in this region" and "More programs in this category" suggestions with duplicate prevention
+    8. **CSV export** for all three datasets (programs, crime data, engagement data) — respects all active filters so downloads match what users see on screen
+    9. **Enhanced homepage** — added NT crime data highlights, engagement gap stats, crime by region cards, programs per region cards, and quick links to dashboards
+    10. **Region profile pages** — comprehensive per-region view combining programs, crime statistics (3 charts), alcohol/DV percentages, engagement data, program category breakdown, CSV export, and cross-region navigation
+  - Wrote **Architectural Decision Records (ADRs):**
+    - ADR: Data Import Pipeline Design (Data ADRs)
+    - ADR: Data Encapsulation in Pipeline Models (Data ADRs)
+    - ADR: Data Encapsulation Design Philosophy (Design Philosophies — ADR4)
+    - ADR: Functionality Improvements — Assessment 4 (Data ADRs)
+  - Created **UI/UX design guide** for Figma designer — complete specification covering all pages, components, colour palette, data references, user flows, responsive breakpoints, and deliverables checklist
+  - Wrote **non-technical documentation** explaining all improvements in plain language for assessment submission
+  - Registered new models in **admin.py** with list displays, filters, and search fields
+  - Participated in team meetings, supported debugging, and coordinated between data (Gilbert) and presentation (Ahmad) layers
 
 - **Nawshin:**
   - **Django model development** (Program and Organisation structure)
